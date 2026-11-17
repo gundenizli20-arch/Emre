@@ -6,14 +6,14 @@
   <!-- Indispensable pour que le site s'affiche bien sur téléphone -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <!-- Titre affiché dans l'onglet du navigateur et sur Google -->
-  <title>Mon Studio — Création & Conseil</title>
+  <title>Verre & Infusion — Verres à thé et tasses à café</title>
   <!-- Description affichée sous le titre dans les résultats Google -->
-  <meta name="description" content="Mon Studio vous accompagne dans vos projets avec des solutions modernes, simples et efficaces.">
+  <meta name="description" content="Verres à thé, tasses à café et verres double paroi : des pièces élégantes pour savourer chaque gorgée.">
 
-  <!-- Police d'écriture moderne (Google Fonts) -->
+  <!-- Polices d'écriture : une élégante pour les titres, une lisible pour le texte -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 
   <!-- Notre feuille de style -->
   <link rel="stylesheet" href="style.css">
@@ -23,7 +23,7 @@
   <!-- ============ EN-TÊTE / MENU ============ -->
   <header class="header">
     <div class="container header__inner">
-      <a href="#accueil" class="logo">Mon<span>Studio</span></a>
+      <a href="#accueil" class="logo">Verre <span>&amp;</span> Infusion</a>
 
       <!-- Bouton "hamburger" visible uniquement sur téléphone -->
       <button class="menu-toggle" aria-label="Ouvrir le menu" aria-expanded="false">
@@ -31,8 +31,8 @@
       </button>
 
       <nav class="nav">
-        <a href="#services">Services</a>
-        <a href="#apropos">À propos</a>
+        <a href="#collections">Collections</a>
+        <a href="#histoire">Notre histoire</a>
         <a href="#avis">Avis</a>
         <a href="#contact" class="btn btn--small">Contact</a>
       </nav>
@@ -43,70 +43,100 @@
     <!-- ============ SECTION D'ACCUEIL (HERO) ============ -->
     <section class="hero" id="accueil">
       <div class="container hero__inner">
-        <p class="badge">✨ Disponible pour de nouveaux projets</p>
-        <h1>Donnez vie à vos idées avec un <span class="gradient-text">accompagnement sur mesure</span></h1>
-        <p class="hero__text">
-          Nous aidons les entrepreneurs et les petites entreprises à se développer
-          grâce à des solutions modernes, simples et efficaces.
-        </p>
-        <div class="hero__buttons">
-          <a href="#contact" class="btn">Démarrer un projet</a>
-          <a href="#services" class="btn btn--ghost">Découvrir nos services</a>
+        <div class="hero__content">
+          <p class="badge">🍵 Nouvelle collection d'automne</p>
+          <h1>Le bon verre pour chaque <em>thé</em> et chaque <em>café</em></h1>
+          <p class="hero__text">
+            Verres à thé, tasses à espresso, verres double paroi :
+            des pièces choisies avec soin pour savourer chaque gorgée.
+          </p>
+          <div class="hero__buttons">
+            <a href="#collections" class="btn">Voir les collections</a>
+            <a href="#histoire" class="btn btn--ghost">Notre histoire</a>
+          </div>
         </div>
 
-        <!-- Petits chiffres clés -->
-        <ul class="stats">
-          <li><strong>120+</strong><span>Projets réalisés</span></li>
-          <li><strong>98%</strong><span>Clients satisfaits</span></li>
-          <li><strong>5 ans</strong><span>D'expérience</span></li>
-        </ul>
+        <!-- Illustration d'un verre à thé dessinée en SVG (aucune image à télécharger) -->
+        <div class="hero__visual" aria-hidden="true">
+          <svg viewBox="0 0 200 230" class="tea-glass">
+            <defs>
+              <linearGradient id="the" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#d9822b"/>
+                <stop offset="1" stop-color="#8a3b12"/>
+              </linearGradient>
+              <clipPath id="forme-verre">
+                <path d="M65 50 C65 90 82 110 82 130 C82 150 70 165 72 185 C74 198 85 202 100 202 C115 202 126 198 128 185 C130 165 118 150 118 130 C118 110 135 90 135 50 Z"/>
+              </clipPath>
+            </defs>
+            <!-- Vapeur -->
+            <path class="steam" d="M88 40 C80 30 96 22 88 10"/>
+            <path class="steam steam--2" d="M108 42 C100 32 116 24 108 12"/>
+            <!-- Soucoupe -->
+            <ellipse cx="100" cy="210" rx="78" ry="13" class="saucer"/>
+            <!-- Thé à l'intérieur du verre -->
+            <rect x="60" y="68" width="80" height="140" fill="url(#the)" clip-path="url(#forme-verre)"/>
+            <!-- Contour du verre -->
+            <path d="M65 50 C65 90 82 110 82 130 C82 150 70 165 72 185 C74 198 85 202 100 202 C115 202 126 198 128 185 C130 165 118 150 118 130 C118 110 135 90 135 50 Z" class="glass"/>
+            <!-- Reflet -->
+            <path d="M74 62 C74 88 86 104 88 122" class="shine"/>
+          </svg>
+        </div>
       </div>
     </section>
 
-    <!-- ============ SERVICES ============ -->
-    <section class="section" id="services">
+    <!-- ============ COLLECTIONS ============ -->
+    <section class="section" id="collections">
       <div class="container">
-        <p class="eyebrow">Nos services</p>
-        <h2>Tout ce qu'il vous faut pour réussir</h2>
+        <p class="eyebrow">Nos collections</p>
+        <h2>Pour les amoureux du thé et du café</h2>
 
         <div class="cards">
           <article class="card reveal">
-            <div class="card__icon">🎨</div>
-            <h3>Design</h3>
-            <p>Une identité visuelle soignée qui vous ressemble et marque les esprits.</p>
+            <div class="card__icon card__icon--the">🍵</div>
+            <h3>Verres à thé</h3>
+            <p>Les verres tulipes traditionnels, fins et élégants, pour admirer la couleur ambrée du thé.</p>
+            <p class="price">À partir de 12 €</p>
           </article>
           <article class="card reveal">
-            <div class="card__icon">💻</div>
-            <h3>Site Internet</h3>
-            <p>Des sites rapides, élégants et parfaitement adaptés aux téléphones.</p>
+            <div class="card__icon card__icon--cafe">☕</div>
+            <h3>Tasses à café</h3>
+            <p>Des tasses à espresso et à cappuccino en porcelaine qui gardent votre café bien chaud.</p>
+            <p class="price">À partir de 15 €</p>
           </article>
           <article class="card reveal">
-            <div class="card__icon">📈</div>
-            <h3>Visibilité</h3>
-            <p>Soyez trouvé sur Google et les réseaux sociaux par vos futurs clients.</p>
+            <div class="card__icon card__icon--latte">🥛</div>
+            <h3>Verres double paroi</h3>
+            <p>Le latte semble flotter dans l'air, et le verre ne brûle jamais les doigts.</p>
+            <p class="price">À partir de 18 €</p>
+          </article>
+          <article class="card reveal">
+            <div class="card__icon card__icon--cadeau">🎁</div>
+            <h3>Coffrets cadeaux</h3>
+            <p>Des ensembles prêts à offrir, joliment emballés, pour faire plaisir à coup sûr.</p>
+            <p class="price">À partir de 35 €</p>
           </article>
         </div>
       </div>
     </section>
 
-    <!-- ============ À PROPOS ============ -->
-    <section class="section section--alt" id="apropos">
+    <!-- ============ NOTRE HISTOIRE ============ -->
+    <section class="section section--alt" id="histoire">
       <div class="container split">
         <div class="split__image reveal" aria-hidden="true">
-          <span>👋</span>
+          <span>☕</span><span>🍵</span>
         </div>
         <div class="reveal">
-          <p class="eyebrow">À propos</p>
-          <h2>Une équipe passionnée, à votre écoute</h2>
+          <p class="eyebrow">Notre histoire</p>
+          <h2>Une passion née autour d'une tasse</h2>
           <p>
-            Chez Mon Studio, nous croyons qu'un bon projet commence par une vraie
-            conversation. Nous prenons le temps de comprendre vos besoins pour vous
-            proposer des solutions qui font la différence.
+            Tout a commencé par un simple verre de thé partagé entre amis.
+            Depuis, nous sélectionnons des verres et des tasses qui rendent
+            chaque pause plus belle : solides, élégants et agréables à tenir.
           </p>
           <ul class="checklist">
-            <li>Conseils personnalisés</li>
-            <li>Tarifs transparents</li>
-            <li>Suivi après livraison</li>
+            <li>Verre résistant à la chaleur</li>
+            <li>Passe au lave-vaisselle</li>
+            <li>Emballage soigné et livraison rapide</li>
           </ul>
         </div>
       </div>
@@ -115,17 +145,17 @@
     <!-- ============ AVIS CLIENTS ============ -->
     <section class="section" id="avis">
       <div class="container">
-        <p class="eyebrow">Ils nous font confiance</p>
+        <p class="eyebrow">Ils ont adoré</p>
         <h2>Ce que disent nos clients</h2>
 
-        <div class="cards">
+        <div class="cards cards--2">
           <blockquote class="card quote reveal">
-            <p>« Un travail remarquable, à l'écoute et très réactif. Je recommande ! »</p>
-            <footer>— Sophie, fleuriste</footer>
+            <p>« Les verres à thé sont magnifiques, on voit la couleur du thé à la perfection. »</p>
+            <footer>★★★★★ — Leïla</footer>
           </blockquote>
           <blockquote class="card quote reveal">
-            <p>« Notre nouveau site nous a apporté de nombreux clients en quelques semaines. »</p>
-            <footer>— Karim, restaurateur</footer>
+            <p>« Mes verres double paroi sont devenus mes préférés pour le cappuccino du matin. »</p>
+            <footer>★★★★★ — Thomas</footer>
           </blockquote>
         </div>
       </div>
@@ -135,7 +165,7 @@
     <section class="section" id="contact">
       <div class="container">
         <div class="cta reveal">
-          <h2>Prêt à lancer votre projet&nbsp;?</h2>
+          <h2>Une question, une commande&nbsp;?</h2>
           <p>Écrivez-nous, nous vous répondons sous 24 heures.</p>
           <a href="mailto:contact@exemple.fr" class="btn btn--light">contact@exemple.fr</a>
         </div>
@@ -146,7 +176,7 @@
   <!-- ============ PIED DE PAGE ============ -->
   <footer class="footer">
     <div class="container">
-      <p>© <span id="annee"></span> Mon Studio. Tous droits réservés.</p>
+      <p>© <span id="annee"></span> Verre &amp; Infusion. Fait avec ☕ et 🍵.</p>
     </div>
   </footer>
 

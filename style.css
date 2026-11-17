@@ -1,29 +1,37 @@
 /* =========================================================
-   1. VARIABLES — changez ces couleurs pour personnaliser le site
+   1. VARIABLES — les couleurs du thé et du café
+   Changez ces valeurs pour personnaliser tout le site.
    ========================================================= */
 :root {
-  --couleur-principale: #4f46e5;   /* violet-bleu */
-  --couleur-secondaire: #06b6d4;   /* turquoise */
-  --fond: #ffffff;
-  --fond-alt: #f5f6fb;
-  --texte: #1e1b3a;
-  --texte-doux: #5b5873;
-  --bordure: #e6e6f0;
-  --carte: #ffffff;
-  --rayon: 16px;
-  --ombre: 0 10px 30px rgba(30, 27, 58, 0.08);
+  --espresso: #3b2418;     /* café noir : titres, boutons */
+  --caramel: #b8692e;      /* café caramel : accents */
+  --the-ambre: #d9822b;    /* thé infusé : petits détails */
+  --matcha: #6f8a4a;       /* thé vert : touches de vert */
+  --creme: #f3e6d4;        /* mousse de lait : fonds doux */
+
+  --fond: #fbf7f1;         /* fond général, couleur lait */
+  --fond-alt: #f3e9dc;
+  --texte: #2e1d14;
+  --texte-doux: #6e5848;
+  --bordure: #e7d8c5;
+  --carte: #fffdf9;
+  --rayon: 18px;
+  --ombre: 0 10px 30px rgba(59, 36, 24, 0.08);
 }
 
-/* Mode sombre automatique si le téléphone est réglé en sombre */
+/* Mode sombre automatique : ambiance "café noir" */
 @media (prefers-color-scheme: dark) {
   :root {
-    --fond: #0f0e1a;
-    --fond-alt: #17162a;
-    --texte: #f1f0fa;
-    --texte-doux: #a9a7c2;
-    --bordure: #2a2842;
-    --carte: #1b1a30;
-    --ombre: 0 10px 30px rgba(0, 0, 0, 0.35);
+    --espresso: #e9c9a0;
+    --caramel: #e0975a;
+    --fond: #1c130e;
+    --fond-alt: #251a13;
+    --texte: #f5ebe0;
+    --texte-doux: #c4ad98;
+    --bordure: #3a2a20;
+    --carte: #2a1e16;
+    --creme: #3a2a20;
+    --ombre: 0 10px 30px rgba(0, 0, 0, 0.4);
   }
 }
 
@@ -52,17 +60,15 @@ a { color: inherit; text-decoration: none; }
   padding: 0 20px;
 }
 
-h1, h2, h3 { line-height: 1.2; letter-spacing: -0.02em; }
-h1 { font-size: clamp(2rem, 7vw, 3.6rem); font-weight: 800; }
-h2 { font-size: clamp(1.6rem, 5vw, 2.4rem); font-weight: 700; margin-bottom: 1rem; }
-h3 { font-size: 1.2rem; margin-bottom: 0.5rem; }
-
-.gradient-text {
-  background: linear-gradient(90deg, var(--couleur-principale), var(--couleur-secondaire));
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+h1, h2, h3 {
+  font-family: "Playfair Display", Georgia, serif;
+  line-height: 1.2;
+  color: var(--espresso);
 }
+h1 { font-size: clamp(2.1rem, 8vw, 3.6rem); }
+h1 em { font-style: italic; color: var(--caramel); }
+h2 { font-size: clamp(1.7rem, 5.5vw, 2.5rem); margin-bottom: 1rem; }
+h3 { font-size: 1.3rem; margin-bottom: 0.5rem; }
 
 /* =========================================================
    3. BOUTONS
@@ -73,22 +79,22 @@ h3 { font-size: 1.2rem; margin-bottom: 0.5rem; }
   border-radius: 999px;
   font-weight: 600;
   text-align: center;
-  background: var(--couleur-principale);
-  color: #fff;
+  background: var(--espresso);
+  color: var(--fond);
   transition: transform 0.2s, box-shadow 0.2s;
 }
 .btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(79, 70, 229, 0.35);
+  box-shadow: 0 8px 20px rgba(59, 36, 24, 0.3);
 }
 .btn--ghost {
   background: transparent;
-  color: var(--texte);
+  color: var(--espresso);
   border: 1.5px solid var(--bordure);
 }
-.btn--ghost:hover { box-shadow: none; border-color: var(--couleur-principale); }
+.btn--ghost:hover { box-shadow: none; border-color: var(--caramel); }
 .btn--small { padding: 10px 20px; }
-.btn--light { background: #fff; color: var(--couleur-principale); }
+.btn--light { background: #fff8ef; color: #3b2418; }
 
 /* =========================================================
    4. EN-TÊTE ET MENU
@@ -97,7 +103,7 @@ h3 { font-size: 1.2rem; margin-bottom: 0.5rem; }
   position: sticky;
   top: 0;
   z-index: 10;
-  background: color-mix(in srgb, var(--fond) 85%, transparent);
+  background: color-mix(in srgb, var(--fond) 88%, transparent);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--bordure);
@@ -108,8 +114,13 @@ h3 { font-size: 1.2rem; margin-bottom: 0.5rem; }
   justify-content: space-between;
   height: 68px;
 }
-.logo { font-size: 1.35rem; font-weight: 800; }
-.logo span { color: var(--couleur-principale); }
+.logo {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--espresso);
+}
+.logo span { color: var(--caramel); }
 
 /* Bouton hamburger (téléphone) */
 .menu-toggle {
@@ -124,7 +135,7 @@ h3 { font-size: 1.2rem; margin-bottom: 0.5rem; }
 .menu-toggle span {
   width: 24px;
   height: 2px;
-  background: var(--texte);
+  background: var(--espresso);
   border-radius: 2px;
   transition: transform 0.3s, opacity 0.3s;
 }
@@ -158,12 +169,18 @@ h3 { font-size: 1.2rem; margin-bottom: 0.5rem; }
    5. SECTION D'ACCUEIL (HERO)
    ========================================================= */
 .hero {
-  padding: 64px 0 72px;
+  padding: 48px 0 64px;
   background:
-    radial-gradient(circle at 15% 10%, rgba(79, 70, 229, 0.15), transparent 45%),
-    radial-gradient(circle at 90% 30%, rgba(6, 182, 212, 0.15), transparent 45%);
+    radial-gradient(circle at 85% 20%, rgba(217, 130, 43, 0.18), transparent 50%),
+    radial-gradient(circle at 10% 90%, rgba(111, 138, 74, 0.12), transparent 45%);
 }
-.hero__inner { text-align: center; }
+.hero__inner {
+  display: flex;
+  flex-direction: column-reverse; /* sur téléphone : le verre au-dessus du texte */
+  align-items: center;
+  gap: 24px;
+  text-align: center;
+}
 .badge {
   display: inline-block;
   padding: 6px 14px;
@@ -175,7 +192,7 @@ h3 { font-size: 1.2rem; margin-bottom: 0.5rem; }
   border: 1px solid var(--bordure);
 }
 .hero__text {
-  max-width: 560px;
+  max-width: 520px;
   margin: 20px auto 32px;
   font-size: 1.1rem;
   color: var(--texte-doux);
@@ -185,21 +202,34 @@ h3 { font-size: 1.2rem; margin-bottom: 0.5rem; }
   flex-direction: column;
   gap: 12px;
 }
-.stats {
-  list-style: none;
+
+/* Le verre à thé dessiné */
+.hero__visual {
+  width: 190px;
+  aspect-ratio: 1;
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
-  margin-top: 48px;
+  place-items: center;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--creme) 0%, transparent 70%);
 }
-.stats li {
-  padding: 16px 8px;
-  background: var(--carte);
-  border: 1px solid var(--bordure);
-  border-radius: var(--rayon);
+.tea-glass { width: 75%; overflow: visible; }
+.tea-glass .glass { fill: rgba(255, 255, 255, 0.15); stroke: var(--espresso); stroke-width: 2.5; }
+.tea-glass .saucer { fill: var(--caramel); opacity: 0.85; }
+.tea-glass .shine { fill: none; stroke: rgba(255, 255, 255, 0.6); stroke-width: 4; stroke-linecap: round; }
+.tea-glass .steam {
+  fill: none;
+  stroke: var(--texte-doux);
+  stroke-width: 3;
+  stroke-linecap: round;
+  opacity: 0;
+  animation: vapeur 3s ease-in-out infinite;
 }
-.stats strong { display: block; font-size: 1.4rem; color: var(--couleur-principale); }
-.stats span { font-size: 0.8rem; color: var(--texte-doux); }
+.tea-glass .steam--2 { animation-delay: 1.5s; }
+@keyframes vapeur {
+  0%   { opacity: 0;   transform: translateY(8px); }
+  40%  { opacity: 0.6; }
+  100% { opacity: 0;   transform: translateY(-10px); }
+}
 
 /* =========================================================
    6. SECTIONS ET CARTES
@@ -207,11 +237,11 @@ h3 { font-size: 1.2rem; margin-bottom: 0.5rem; }
 .section { padding: 72px 0; }
 .section--alt { background: var(--fond-alt); }
 .eyebrow {
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: var(--couleur-principale);
+  letter-spacing: 0.12em;
+  color: var(--caramel);
   margin-bottom: 8px;
 }
 .section p { color: var(--texte-doux); }
@@ -233,40 +263,47 @@ h3 { font-size: 1.2rem; margin-bottom: 0.5rem; }
 .card__icon {
   display: grid;
   place-items: center;
-  width: 52px;
-  height: 52px;
+  width: 56px;
+  height: 56px;
   margin-bottom: 16px;
-  font-size: 1.6rem;
-  border-radius: 14px;
-  background: var(--fond-alt);
+  font-size: 1.7rem;
+  border-radius: 16px;
 }
+/* Chaque collection a sa couleur de boisson */
+.card__icon--the    { background: rgba(217, 130, 43, 0.18); }  /* thé ambré */
+.card__icon--cafe   { background: rgba(59, 36, 24, 0.14); }    /* café noir */
+.card__icon--latte  { background: rgba(200, 162, 122, 0.25); } /* café au lait */
+.card__icon--cadeau { background: rgba(111, 138, 74, 0.18); }  /* thé vert */
+.price { margin-top: 14px; font-weight: 600; color: var(--caramel) !important; }
 
 .quote p { font-size: 1.05rem; color: var(--texte); font-style: italic; }
-.quote footer { margin-top: 12px; font-weight: 600; color: var(--texte-doux); }
+.quote footer { margin-top: 12px; font-weight: 600; color: var(--caramel); }
 
-/* À propos : image + texte */
+/* Notre histoire : image + texte */
 .split { display: grid; gap: 32px; align-items: center; }
 .split__image {
-  display: grid;
-  place-items: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
   aspect-ratio: 4 / 3;
   border-radius: var(--rayon);
-  font-size: 5rem;
-  background: linear-gradient(135deg, var(--couleur-principale), var(--couleur-secondaire));
+  font-size: 4.5rem;
+  background: linear-gradient(135deg, #3b2418 0%, #b8692e 55%, #d9a066 100%);
 }
 .checklist { list-style: none; margin-top: 20px; }
 .checklist li { padding: 6px 0; font-weight: 500; }
-.checklist li::before { content: "✓"; margin-right: 10px; color: var(--couleur-principale); font-weight: 700; }
+.checklist li::before { content: "✓"; margin-right: 10px; color: var(--matcha); font-weight: 700; }
 
 /* Bloc d'appel à l'action (contact) */
 .cta {
   padding: 48px 24px;
   text-align: center;
-  color: #fff;
   border-radius: 24px;
-  background: linear-gradient(135deg, var(--couleur-principale), var(--couleur-secondaire));
+  background: linear-gradient(135deg, #3b2418, #7a4425);
 }
-.cta p { color: rgba(255, 255, 255, 0.9); margin-bottom: 24px; }
+.cta h2 { color: #fff8ef; }
+.cta p { color: rgba(255, 248, 239, 0.85) !important; margin-bottom: 24px; }
 .cta .btn { word-break: break-all; }
 
 /* Pied de page */
@@ -300,22 +337,28 @@ h3 { font-size: 1.2rem; margin-bottom: 0.5rem; }
     pointer-events: auto;
   }
   .nav a:not(.btn) { padding: 0; }
-  .nav a:not(.btn):hover { color: var(--couleur-principale); }
+  .nav a:not(.btn):hover { color: var(--caramel); }
   .nav .btn { margin-top: 0; }
 
-  .hero { padding: 110px 0 100px; }
-  .hero__buttons { flex-direction: row; justify-content: center; }
-  .stats { max-width: 600px; margin-left: auto; margin-right: auto; }
-  .stats strong { font-size: 1.8rem; }
+  .hero { padding: 90px 0; }
+  .hero__inner { flex-direction: row; justify-content: space-between; text-align: left; gap: 48px; }
+  .hero__text { margin-left: 0; }
+  .hero__buttons { flex-direction: row; }
+  .hero__visual { width: 360px; flex-shrink: 0; }
 
-  .cards { grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+  .cards { grid-template-columns: repeat(2, 1fr); }
   .split { grid-template-columns: 1fr 1fr; gap: 56px; }
   .section { padding: 100px 0; }
   .cta { padding: 72px 40px; }
 }
 
+@media (min-width: 1024px) {
+  .cards { grid-template-columns: repeat(4, 1fr); }
+  .cards--2 { grid-template-columns: repeat(2, 1fr); }
+}
+
 /* Respecte les personnes qui préfèrent moins d'animations */
 @media (prefers-reduced-motion: reduce) {
-  * { transition: none !important; scroll-behavior: auto !important; }
+  * { transition: none !important; animation: none !important; scroll-behavior: auto !important; }
   .reveal { opacity: 1; transform: none; }
 }

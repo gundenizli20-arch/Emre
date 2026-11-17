@@ -1,4 +1,4 @@
-# Mon premier site Internet
+# Verre & Infusion — mon premier site
 
 Une page d'accueil moderne, adaptée aux téléphones, en HTML / CSS / JavaScript (sans outil compliqué).
 
@@ -16,9 +16,9 @@ Double-cliquez sur `index.html` : il s'ouvre dans votre navigateur.
 
 ## Personnaliser
 
-1. **Le nom** : dans `index.html`, remplacez « Mon Studio » par le vôtre.
+1. **Le nom** : dans `index.html`, remplacez « Verre & Infusion » par le vôtre.
 2. **Les textes** : modifiez directement les phrases entre les balises (`<h1>`, `<p>`…).
-3. **Les couleurs** : en haut de `style.css`, changez `--couleur-principale` et `--couleur-secondaire`.
+3. **Les couleurs** : en haut de `style.css`, changez les couleurs `--espresso`, `--caramel`, `--the-ambre`, `--matcha` et `--creme`.
 4. **L'e-mail** : cherchez `contact@exemple.fr` et mettez votre adresse.
 
 ## Mettre le site en ligne gratuitement (GitHub Pages)
