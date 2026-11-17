@@ -1,0 +1,321 @@
+/* =========================================================
+   1. VARIABLES — changez ces couleurs pour personnaliser le site
+   ========================================================= */
+:root {
+  --couleur-principale: #4f46e5;   /* violet-bleu */
+  --couleur-secondaire: #06b6d4;   /* turquoise */
+  --fond: #ffffff;
+  --fond-alt: #f5f6fb;
+  --texte: #1e1b3a;
+  --texte-doux: #5b5873;
+  --bordure: #e6e6f0;
+  --carte: #ffffff;
+  --rayon: 16px;
+  --ombre: 0 10px 30px rgba(30, 27, 58, 0.08);
+}
+
+/* Mode sombre automatique si le téléphone est réglé en sombre */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --fond: #0f0e1a;
+    --fond-alt: #17162a;
+    --texte: #f1f0fa;
+    --texte-doux: #a9a7c2;
+    --bordure: #2a2842;
+    --carte: #1b1a30;
+    --ombre: 0 10px 30px rgba(0, 0, 0, 0.35);
+  }
+}
+
+/* =========================================================
+   2. BASES
+   ========================================================= */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: "Inter", system-ui, -apple-system, sans-serif;
+  background: var(--fond);
+  color: var(--texte);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: inherit; text-decoration: none; }
+
+/* Conteneur centré avec marges sur les côtés */
+.container {
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+h1, h2, h3 { line-height: 1.2; letter-spacing: -0.02em; }
+h1 { font-size: clamp(2rem, 7vw, 3.6rem); font-weight: 800; }
+h2 { font-size: clamp(1.6rem, 5vw, 2.4rem); font-weight: 700; margin-bottom: 1rem; }
+h3 { font-size: 1.2rem; margin-bottom: 0.5rem; }
+
+.gradient-text {
+  background: linear-gradient(90deg, var(--couleur-principale), var(--couleur-secondaire));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* =========================================================
+   3. BOUTONS
+   ========================================================= */
+.btn {
+  display: inline-block;
+  padding: 14px 26px;
+  border-radius: 999px;
+  font-weight: 600;
+  text-align: center;
+  background: var(--couleur-principale);
+  color: #fff;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(79, 70, 229, 0.35);
+}
+.btn--ghost {
+  background: transparent;
+  color: var(--texte);
+  border: 1.5px solid var(--bordure);
+}
+.btn--ghost:hover { box-shadow: none; border-color: var(--couleur-principale); }
+.btn--small { padding: 10px 20px; }
+.btn--light { background: #fff; color: var(--couleur-principale); }
+
+/* =========================================================
+   4. EN-TÊTE ET MENU
+   ========================================================= */
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: color-mix(in srgb, var(--fond) 85%, transparent);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--bordure);
+}
+.header__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 68px;
+}
+.logo { font-size: 1.35rem; font-weight: 800; }
+.logo span { color: var(--couleur-principale); }
+
+/* Bouton hamburger (téléphone) */
+.menu-toggle {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  background: none;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+}
+.menu-toggle span {
+  width: 24px;
+  height: 2px;
+  background: var(--texte);
+  border-radius: 2px;
+  transition: transform 0.3s, opacity 0.3s;
+}
+/* Transforme le hamburger en croix quand le menu est ouvert */
+.menu-open .menu-toggle span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.menu-open .menu-toggle span:nth-child(2) { opacity: 0; }
+.menu-open .menu-toggle span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+/* Menu déroulant sur téléphone */
+.nav {
+  position: absolute;
+  top: 68px;
+  left: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 16px 20px 24px;
+  background: var(--fond);
+  border-bottom: 1px solid var(--bordure);
+  transform: translateY(-10px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s, transform 0.25s;
+}
+.nav a:not(.btn) { padding: 12px 0; font-weight: 500; }
+.nav .btn { margin-top: 8px; }
+.menu-open .nav { opacity: 1; transform: translateY(0); pointer-events: auto; }
+
+/* =========================================================
+   5. SECTION D'ACCUEIL (HERO)
+   ========================================================= */
+.hero {
+  padding: 64px 0 72px;
+  background:
+    radial-gradient(circle at 15% 10%, rgba(79, 70, 229, 0.15), transparent 45%),
+    radial-gradient(circle at 90% 30%, rgba(6, 182, 212, 0.15), transparent 45%);
+}
+.hero__inner { text-align: center; }
+.badge {
+  display: inline-block;
+  padding: 6px 14px;
+  margin-bottom: 20px;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  background: var(--carte);
+  border: 1px solid var(--bordure);
+}
+.hero__text {
+  max-width: 560px;
+  margin: 20px auto 32px;
+  font-size: 1.1rem;
+  color: var(--texte-doux);
+}
+.hero__buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.stats {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-top: 48px;
+}
+.stats li {
+  padding: 16px 8px;
+  background: var(--carte);
+  border: 1px solid var(--bordure);
+  border-radius: var(--rayon);
+}
+.stats strong { display: block; font-size: 1.4rem; color: var(--couleur-principale); }
+.stats span { font-size: 0.8rem; color: var(--texte-doux); }
+
+/* =========================================================
+   6. SECTIONS ET CARTES
+   ========================================================= */
+.section { padding: 72px 0; }
+.section--alt { background: var(--fond-alt); }
+.eyebrow {
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--couleur-principale);
+  margin-bottom: 8px;
+}
+.section p { color: var(--texte-doux); }
+
+.cards {
+  display: grid;
+  gap: 20px;
+  margin-top: 32px;
+}
+.card {
+  padding: 28px;
+  background: var(--carte);
+  border: 1px solid var(--bordure);
+  border-radius: var(--rayon);
+  box-shadow: var(--ombre);
+  transition: transform 0.25s;
+}
+.card:hover { transform: translateY(-4px); }
+.card__icon {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  margin-bottom: 16px;
+  font-size: 1.6rem;
+  border-radius: 14px;
+  background: var(--fond-alt);
+}
+
+.quote p { font-size: 1.05rem; color: var(--texte); font-style: italic; }
+.quote footer { margin-top: 12px; font-weight: 600; color: var(--texte-doux); }
+
+/* À propos : image + texte */
+.split { display: grid; gap: 32px; align-items: center; }
+.split__image {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 4 / 3;
+  border-radius: var(--rayon);
+  font-size: 5rem;
+  background: linear-gradient(135deg, var(--couleur-principale), var(--couleur-secondaire));
+}
+.checklist { list-style: none; margin-top: 20px; }
+.checklist li { padding: 6px 0; font-weight: 500; }
+.checklist li::before { content: "✓"; margin-right: 10px; color: var(--couleur-principale); font-weight: 700; }
+
+/* Bloc d'appel à l'action (contact) */
+.cta {
+  padding: 48px 24px;
+  text-align: center;
+  color: #fff;
+  border-radius: 24px;
+  background: linear-gradient(135deg, var(--couleur-principale), var(--couleur-secondaire));
+}
+.cta p { color: rgba(255, 255, 255, 0.9); margin-bottom: 24px; }
+.cta .btn { word-break: break-all; }
+
+/* Pied de page */
+.footer {
+  padding: 28px 0;
+  text-align: center;
+  font-size: 0.9rem;
+  color: var(--texte-doux);
+  border-top: 1px solid var(--bordure);
+}
+
+/* Animation d'apparition au défilement */
+.reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.6s, transform 0.6s; }
+.reveal.visible { opacity: 1; transform: none; }
+
+/* =========================================================
+   7. ÉCRANS PLUS LARGES (tablettes et ordinateurs)
+   ========================================================= */
+@media (min-width: 768px) {
+  .menu-toggle { display: none; }
+  .nav {
+    position: static;
+    flex-direction: row;
+    align-items: center;
+    gap: 28px;
+    padding: 0;
+    background: none;
+    border: none;
+    opacity: 1;
+    transform: none;
+    pointer-events: auto;
+  }
+  .nav a:not(.btn) { padding: 0; }
+  .nav a:not(.btn):hover { color: var(--couleur-principale); }
+  .nav .btn { margin-top: 0; }
+
+  .hero { padding: 110px 0 100px; }
+  .hero__buttons { flex-direction: row; justify-content: center; }
+  .stats { max-width: 600px; margin-left: auto; margin-right: auto; }
+  .stats strong { font-size: 1.8rem; }
+
+  .cards { grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+  .split { grid-template-columns: 1fr 1fr; gap: 56px; }
+  .section { padding: 100px 0; }
+  .cta { padding: 72px 40px; }
+}
+
+/* Respecte les personnes qui préfèrent moins d'animations */
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; scroll-behavior: auto !important; }
+  .reveal { opacity: 1; transform: none; }
+}

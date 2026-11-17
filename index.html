@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <!-- Encodage des caractères (accents, emojis...) -->
+  <meta charset="UTF-8">
+  <!-- Indispensable pour que le site s'affiche bien sur téléphone -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Titre affiché dans l'onglet du navigateur et sur Google -->
+  <title>Mon Studio — Création & Conseil</title>
+  <!-- Description affichée sous le titre dans les résultats Google -->
+  <meta name="description" content="Mon Studio vous accompagne dans vos projets avec des solutions modernes, simples et efficaces.">
+
+  <!-- Police d'écriture moderne (Google Fonts) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Notre feuille de style -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ============ EN-TÊTE / MENU ============ -->
+  <header class="header">
+    <div class="container header__inner">
+      <a href="#accueil" class="logo">Mon<span>Studio</span></a>
+
+      <!-- Bouton "hamburger" visible uniquement sur téléphone -->
+      <button class="menu-toggle" aria-label="Ouvrir le menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+
+      <nav class="nav">
+        <a href="#services">Services</a>
+        <a href="#apropos">À propos</a>
+        <a href="#avis">Avis</a>
+        <a href="#contact" class="btn btn--small">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <!-- ============ SECTION D'ACCUEIL (HERO) ============ -->
+    <section class="hero" id="accueil">
+      <div class="container hero__inner">
+        <p class="badge">✨ Disponible pour de nouveaux projets</p>
+        <h1>Donnez vie à vos idées avec un <span class="gradient-text">accompagnement sur mesure</span></h1>
+        <p class="hero__text">
+          Nous aidons les entrepreneurs et les petites entreprises à se développer
+          grâce à des solutions modernes, simples et efficaces.
+        </p>
+        <div class="hero__buttons">
+          <a href="#contact" class="btn">Démarrer un projet</a>
+          <a href="#services" class="btn btn--ghost">Découvrir nos services</a>
+        </div>
+
+        <!-- Petits chiffres clés -->
+        <ul class="stats">
+          <li><strong>120+</strong><span>Projets réalisés</span></li>
+          <li><strong>98%</strong><span>Clients satisfaits</span></li>
+          <li><strong>5 ans</strong><span>D'expérience</span></li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ============ SERVICES ============ -->
+    <section class="section" id="services">
+      <div class="container">
+        <p class="eyebrow">Nos services</p>
+        <h2>Tout ce qu'il vous faut pour réussir</h2>
+
+        <div class="cards">
+          <article class="card reveal">
+            <div class="card__icon">🎨</div>
+            <h3>Design</h3>
+            <p>Une identité visuelle soignée qui vous ressemble et marque les esprits.</p>
+          </article>
+          <article class="card reveal">
+            <div class="card__icon">💻</div>
+            <h3>Site Internet</h3>
+            <p>Des sites rapides, élégants et parfaitement adaptés aux téléphones.</p>
+          </article>
+          <article class="card reveal">
+            <div class="card__icon">📈</div>
+            <h3>Visibilité</h3>
+            <p>Soyez trouvé sur Google et les réseaux sociaux par vos futurs clients.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ À PROPOS ============ -->
+    <section class="section section--alt" id="apropos">
+      <div class="container split">
+        <div class="split__image reveal" aria-hidden="true">
+          <span>👋</span>
+        </div>
+        <div class="reveal">
+          <p class="eyebrow">À propos</p>
+          <h2>Une équipe passionnée, à votre écoute</h2>
+          <p>
+            Chez Mon Studio, nous croyons qu'un bon projet commence par une vraie
+            conversation. Nous prenons le temps de comprendre vos besoins pour vous
+            proposer des solutions qui font la différence.
+          </p>
+          <ul class="checklist">
+            <li>Conseils personnalisés</li>
+            <li>Tarifs transparents</li>
+            <li>Suivi après livraison</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ AVIS CLIENTS ============ -->
+    <section class="section" id="avis">
+      <div class="container">
+        <p class="eyebrow">Ils nous font confiance</p>
+        <h2>Ce que disent nos clients</h2>
+
+        <div class="cards">
+          <blockquote class="card quote reveal">
+            <p>« Un travail remarquable, à l'écoute et très réactif. Je recommande ! »</p>
+            <footer>— Sophie, fleuriste</footer>
+          </blockquote>
+          <blockquote class="card quote reveal">
+            <p>« Notre nouveau site nous a apporté de nombreux clients en quelques semaines. »</p>
+            <footer>— Karim, restaurateur</footer>
+          </blockquote>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ CONTACT ============ -->
+    <section class="section" id="contact">
+      <div class="container">
+        <div class="cta reveal">
+          <h2>Prêt à lancer votre projet&nbsp;?</h2>
+          <p>Écrivez-nous, nous vous répondons sous 24 heures.</p>
+          <a href="mailto:contact@exemple.fr" class="btn btn--light">contact@exemple.fr</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ============ PIED DE PAGE ============ -->
+  <footer class="footer">
+    <div class="container">
+      <p>© <span id="annee"></span> Mon Studio. Tous droits réservés.</p>
+    </div>
+  </footer>
+
+  <!-- Notre script (menu mobile, animations) -->
+  <script src="script.js"></script>
+</body>
+</html>
