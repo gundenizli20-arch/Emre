@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Shortcut Studio</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Shortcut Studio transforme vos podcasts, lives et longues vidéos en clips courts prêts pour TikTok, Instagram Reels et YouTube Shorts.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=DM+Sans:wght@400;500;700&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Mise en page : une "timeline de montage" — la vidéo longue (16:9) devient des clips verticaux (9:16). */
+:root {
+  --bg: #F2F3F7;          /* fond de page */
+  --surface: #FFFFFF;     /* cartes */
+  --ink: #12141C;         /* texte principal */
+  --muted: #5B6072;       /* texte secondaire */
+  --line: #DCDFE8;        /* bordures */
+  --accent: #E8366D;      /* marqueur de clip (rose) */
+  --accent-ink: #FFFFFF;
+  --track: #0F9C93;       /* piste audio (sarcelle) */
+  --deep: #12141C;        /* bandes sombres */
+  --deep-fg: #F2F3F7;
+  --font-display: "Bricolage Grotesque", "Arial Black", system-ui, sans-serif;
+  --font-body: "DM Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --radius: 14px;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0E1016; --surface: #171A23; --ink: #EEF0F6; --muted: #9AA0B4; --line: #2A2E3B;
+    --accent: #FF4F84; --accent-ink: #12141C; --track: #2CC3B8; --deep: #07080C; --deep-fg: #EEF0F6;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0E1016; --surface: #171A23; --ink: #EEF0F6; --muted: #9AA0B4; --line: #2A2E3B;
+  --accent: #FF4F84; --accent-ink: #12141C; --track: #2CC3B8; --deep: #07080C; --deep-fg: #EEF0F6;
+  color-scheme: dark;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 80px; }
+body {
+  margin: 0; background: var(--bg); color: var(--ink);
+  font-family: var(--font-body); font-size: 1.0625rem; line-height: 1.6;
+  -webkit-font-smoothing: antialiased; overflow-x: hidden;
+}
+img { max-width: 100%; }
+h1, h2, h3 { font-family: var(--font-display); line-height: 1.08; margin: 0; text-wrap: balance; letter-spacing: -0.02em; }
+h2 { font-size: clamp(2rem, 6vw, 3.2rem); font-weight: 800; }
+h3 { font-size: 1.25rem; font-weight: 700; }
+p { margin: 0; }
+a { color: inherit; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; border-radius: 6px; }
+
+.wrap {
+  width: 100%; max-width: 1120px; margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+.section { padding-block: clamp(4rem, 10vw, 7rem); }
+.eyebrow {
+  font-family: var(--font-mono); font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--accent); display: inline-flex; align-items: center; gap: 0.5rem;
+}
+.eyebrow::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
+.section-head { display: grid; gap: 1rem; max-width: 640px; margin-bottom: 2.75rem; }
+.section-head p { color: var(--muted); font-size: 1.1rem; }
+
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+  font: 700 1rem/1 var(--font-body); text-decoration: none; cursor: pointer;
+  padding: 1rem 1.4rem; border-radius: 999px; border: 2px solid transparent;
+  transition: transform .15s ease, background .15s ease;
+}
+.btn:hover { transform: translateY(-2px); }
+.btn-primary { background: var(--accent); color: var(--accent-ink); }
+.btn-ghost { border-color: var(--line); color: var(--ink); background: transparent; }
+.btn-ghost:hover { border-color: var(--ink); }
+
+/* ---------- En-tête ---------- */
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 60; background: var(--bg); }
+.header {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 50;
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--line);
+}
+.header .wrap { display: flex; align-items: center; justify-content: space-between; gap: 1rem; height: 68px; }
+.logo { display: flex; align-items: center; gap: 0.6rem; text-decoration: none; font-family: var(--font-display); font-weight: 800; font-size: 1.2rem; }
+.logo-mark { width: 22px; height: 34px; border-radius: 6px; border: 3px solid var(--ink); position: relative; }
+.logo-mark::after { content: ""; position: absolute; left: 50%; top: 50%; transform: translate(-30%, -50%); border: 6px solid transparent; border-left: 8px solid var(--accent); }
+.nav { display: flex; align-items: center; gap: 1.6rem; }
+.nav a { text-decoration: none; font-weight: 500; color: var(--muted); }
+.nav a:hover { color: var(--ink); }
+.nav .btn { color: var(--accent-ink); padding: 0.7rem 1.1rem; }
+.burger { display: none; background: none; border: 0; padding: 10px; cursor: pointer; color: var(--ink); }
+.burger span { display: block; width: 24px; height: 2px; background: currentColor; margin: 5px 0; transition: transform .2s; }
+
+@media (max-width: 860px) {
+  .burger { display: block; }
+  .nav {
+    position: fixed; inset: calc(68px + env(safe-area-inset-top, 0px)) 0 auto 0; flex-direction: column; align-items: stretch; gap: 0;
+    background: var(--bg); border-bottom: 1px solid var(--line);
+    padding: 0.5rem max(16px, env(safe-area-inset-right, 0px)) 1.25rem max(16px, env(safe-area-inset-left, 0px));
+    transform: translateY(-120%); transition: transform .25s ease; visibility: hidden;
+  }
+  .nav.open { transform: none; visibility: visible; }
+  .nav a { padding: 0.9rem 0; font-size: 1.15rem; border-bottom: 1px solid var(--line); color: var(--ink); }
+  .nav .btn { margin-top: 1rem; border-bottom: 0; }
+  .burger[aria-expanded="true"] span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .burger[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+  .burger[aria-expanded="true"] span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+}
+
+/* ---------- Accueil ---------- */
+.hero { padding-block: clamp(3rem, 8vw, 5.5rem) clamp(3rem, 7vw, 5rem); }
+.hero-grid { display: grid; gap: 3rem; grid-template-columns: 1.05fr 1fr; align-items: center; }
+.hero-copy { display: grid; gap: 1.5rem; min-width: 0; }
+.hero h1 { font-size: clamp(2.6rem, 8.5vw, 4.6rem); font-weight: 800; }
+.hero h1 em { font-style: normal; color: var(--accent); }
+.hero-lead { font-size: 1.2rem; color: var(--muted); max-width: 34ch; }
+.hero-ctas { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+.platforms { display: flex; flex-wrap: wrap; gap: 0.5rem; font-family: var(--font-mono); font-size: 0.8rem; color: var(--muted); }
+.platforms span { border: 1px solid var(--line); border-radius: 999px; padding: 0.35rem 0.75rem; }
+
+/* La table de montage */
+.edit-desk { background: var(--deep); color: var(--deep-fg); border-radius: 22px; padding: 1.25rem; display: grid; gap: 1.1rem; min-width: 0; box-shadow: 0 30px 60px -30px rgba(18,20,28,.55); }
+.desk-top { display: flex; justify-content: space-between; font-family: var(--font-mono); font-size: 0.72rem; opacity: .7; gap: 1rem; }
+.source { aspect-ratio: 16 / 9; max-width: 100%; border-radius: 10px; position: relative; overflow: hidden;
+  background: linear-gradient(135deg, #2B3045 0%, #1C2030 100%); }
+.source .mic { position: absolute; left: 50%; bottom: 0; transform: translateX(-50%); width: 36%; height: 72%; }
+.source .rec { position: absolute; top: 10px; left: 12px; font-family: var(--font-mono); font-size: 0.7rem; display: flex; gap: .4rem; align-items: center; color: #F2F3F7; }
+.source .rec::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: #FF4F84; animation: blink 1.4s infinite; }
+.source .dur { position: absolute; bottom: 10px; right: 12px; font-family: var(--font-mono); font-size: 0.7rem; background: rgba(0,0,0,.5); padding: 2px 6px; border-radius: 4px; color: #F2F3F7; }
+.timeline { position: relative; height: 56px; border-radius: 8px; background: #1A1D29; overflow: hidden; }
+.wave { position: absolute; inset: 8px 0; display: flex; align-items: center; gap: 2px; padding: 0 4px; }
+.wave i { flex: 1; background: #2CC3B8; opacity: .55; border-radius: 2px; min-width: 1px; }
+.cut { position: absolute; top: 0; bottom: 0; border: 2px solid #FF4F84; background: rgba(255,79,132,.18); border-radius: 6px; }
+.cut b { position: absolute; top: -1px; left: -1px; background: #FF4F84; color: #12141C; font: 500 0.6rem/1 var(--font-mono); padding: 3px 4px; border-radius: 4px 0 4px 0; }
+.playhead { position: absolute; top: 0; bottom: 0; width: 2px; background: #F2F3F7; left: 8%; animation: play 9s linear infinite; }
+.clips { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; }
+.clip { aspect-ratio: 9 / 16; max-width: 100%; border-radius: 12px; position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: flex-end; padding: 0.6rem; }
+.clip:nth-child(1) { background: linear-gradient(180deg, #3A2F52, #1C1A2A); }
+.clip:nth-child(2) { background: linear-gradient(180deg, #1F4A4A, #12222A); }
+.clip:nth-child(3) { background: linear-gradient(180deg, #5A2A3A, #221419); }
+.clip .caption { font-family: var(--font-display); font-weight: 800; font-size: clamp(0.7rem, 2.6vw, 0.95rem); line-height: 1.1; color: #fff; text-transform: uppercase; }
+.clip .caption mark { background: #FFD43B; color: #12141C; padding: 0 3px; border-radius: 3px; }
+.clip .meta { font-family: var(--font-mono); font-size: 0.6rem; color: rgba(255,255,255,.75); margin-top: .4rem; }
+.clip .tag { position: absolute; top: 0.5rem; left: 0.5rem; font: 500 0.58rem/1 var(--font-mono); background: rgba(255,255,255,.14); color: #fff; padding: 4px 6px; border-radius: 999px; }
+@keyframes play { from { left: 2%; } to { left: 97%; } }
+@keyframes blink { 50% { opacity: .2; } }
+
+.proof { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-top: 3rem; border-top: 1px solid var(--line); padding-top: 1.75rem; }
+.proof div { display: grid; gap: .2rem; }
+.proof strong { font-family: var(--font-display); font-size: clamp(1.5rem, 5vw, 2.2rem); font-weight: 800; font-variant-numeric: tabular-nums; }
+.proof span { color: var(--muted); font-size: 0.92rem; }
+
+@media (max-width: 860px) {
+  .hero-grid { grid-template-columns: 1fr; }
+  .proof { grid-template-columns: 1fr 1fr 1fr; gap: .75rem; }
+  .proof span { font-size: 0.8rem; }
+}
+
+/* ---------- Services ---------- */
+.audience { display: flex; flex-wrap: wrap; gap: .6rem; margin-bottom: 2.5rem; }
+.audience span { background: var(--surface); border: 1px solid var(--line); border-radius: 999px; padding: .55rem 1rem; font-weight: 500; }
+.services { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; }
+.service { background: var(--surface); padding: 1.75rem; display: grid; gap: .75rem; align-content: start; min-width: 0; }
+.service svg { width: 34px; height: 34px; color: var(--accent); }
+.service p { color: var(--muted); }
+@media (max-width: 860px) { .services { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 560px) { .services { grid-template-columns: 1fr; } }
+
+/* ---------- Méthode ---------- */
+.band { background: var(--deep); color: var(--deep-fg); }
+.band .section-head p { color: color-mix(in srgb, var(--deep-fg) 70%, transparent); }
+.steps { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.25rem; counter-reset: step; position: relative; }
+.step { display: grid; gap: .75rem; align-content: start; padding-top: 1.5rem; border-top: 2px solid color-mix(in srgb, var(--deep-fg) 20%, transparent); position: relative; min-width: 0; }
+.step::before { counter-increment: step; content: "0" counter(step); font-family: var(--font-mono); font-size: .85rem; color: var(--accent); }
+.step::after { content: ""; position: absolute; top: -6px; left: 0; width: 10px; height: 10px; border-radius: 50%; background: var(--accent); }
+.step p { color: color-mix(in srgb, var(--deep-fg) 70%, transparent); }
+.step .time { font-family: var(--font-mono); font-size: .75rem; color: var(--track); }
+@media (max-width: 860px) {
+  .steps { grid-template-columns: 1fr; gap: 0; }
+  .step { border-top: 0; border-left: 2px solid color-mix(in srgb, var(--deep-fg) 20%, transparent); padding: 0 0 2rem 1.5rem; }
+  .step::after { top: 4px; left: -6px; }
+  .step:last-child { padding-bottom: 0; }
+}
+
+/* ---------- Démos ---------- */
+.demos { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; }
+.demo { display: grid; gap: .6rem; min-width: 0; }
+.demo-frame { aspect-ratio: 9 / 16; max-width: 100%; border-radius: 16px; overflow: hidden; position: relative; background: var(--deep); border: 0; padding: 0; cursor: pointer; width: 100%; color: #fff; text-align: left; }
+.demo-frame iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+.demo-frame .poster { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: space-between; padding: .8rem; }
+.demo:nth-child(4n+1) .poster { background: linear-gradient(170deg, #3A2F52, #12141C 80%); }
+.demo:nth-child(4n+2) .poster { background: linear-gradient(170deg, #1F4A4A, #12141C 80%); }
+.demo:nth-child(4n+3) .poster { background: linear-gradient(170deg, #5A2A3A, #12141C 80%); }
+.demo:nth-child(4n+4) .poster { background: linear-gradient(170deg, #4A3F1F, #12141C 80%); }
+.poster .tag { align-self: flex-start; font: 500 .65rem/1 var(--font-mono); background: rgba(255,255,255,.14); padding: 5px 8px; border-radius: 999px; }
+.poster .play { align-self: center; width: 58px; height: 58px; border-radius: 50%; background: rgba(255,255,255,.95); display: grid; place-items: center; transition: transform .2s; }
+.poster .play::after { content: ""; border: 10px solid transparent; border-left: 16px solid #12141C; margin-left: 8px; }
+.demo-frame:hover .play { transform: scale(1.08); }
+.poster .caption { font-family: var(--font-display); font-weight: 800; text-transform: uppercase; font-size: 1rem; line-height: 1.15; }
+.poster .caption mark { background: #FFD43B; color: #12141C; padding: 0 4px; border-radius: 3px; }
+.demo h3 { font-size: 1rem; }
+.demo .info { font-family: var(--font-mono); font-size: .75rem; color: var(--muted); }
+.demo-note { margin-top: 1.5rem; color: var(--muted); font-size: .95rem; }
+@media (max-width: 860px) { .demos { grid-template-columns: repeat(2, 1fr); } }
+
+/* ---------- Tarifs ---------- */
+.pricing { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; align-items: stretch; }
+.plan { background: var(--surface); border: 1px solid var(--line); border-radius: 20px; padding: 2rem 1.6rem; display: flex; flex-direction: column; gap: 1.25rem; min-width: 0; position: relative; }
+.plan.featured { border: 2px solid var(--accent); }
+.plan .badge { position: absolute; top: -13px; left: 1.6rem; background: var(--accent); color: var(--accent-ink); font: 700 .75rem/1 var(--font-body); padding: .45rem .75rem; border-radius: 999px; }
+.plan .name { font-family: var(--font-mono); font-size: .8rem; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }
+.price { display: flex; align-items: baseline; gap: .3rem; }
+.price strong { font-family: var(--font-display); font-size: 3rem; font-weight: 800; line-height: 1; font-variant-numeric: tabular-nums; }
+.price span { color: var(--muted); }
+.plan .per-clip { font-family: var(--font-mono); font-size: .8rem; color: var(--track); }
+.plan ul { list-style: none; padding: 0; margin: 0; display: grid; gap: .6rem; flex: 1; }
+.plan li { padding-left: 1.6rem; position: relative; }
+.plan li::before { content: ""; position: absolute; left: 0; top: .45em; width: 12px; height: 7px; border-left: 2.5px solid var(--track); border-bottom: 2.5px solid var(--track); transform: rotate(-45deg); }
+.plan .btn { width: 100%; }
+.offer { margin-top: 1.75rem; display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; justify-content: space-between; border: 1px dashed var(--accent); border-radius: var(--radius); padding: 1.25rem 1.5rem; }
+.offer p { font-weight: 500; }
+@media (max-width: 860px) { .pricing { grid-template-columns: 1fr; gap: 1.75rem; } }
+
+/* ---------- FAQ ---------- */
+.faq { display: grid; gap: .75rem; max-width: 760px; }
+.faq details { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 1.1rem 1.3rem; }
+.faq summary { cursor: pointer; font-weight: 700; list-style: none; display: flex; justify-content: space-between; gap: 1rem; }
+.faq summary::-webkit-details-marker { display: none; }
+.faq summary::after { content: "+"; font-family: var(--font-mono); color: var(--accent); font-size: 1.2rem; line-height: 1; }
+.faq details[open] summary::after { content: "–"; }
+.faq details p { color: var(--muted); margin-top: .75rem; }
+
+/* ---------- Contact ---------- */
+.contact-grid { display: grid; grid-template-columns: 0.8fr 1.2fr; gap: 3rem; align-items: start; }
+.contact-info { display: grid; gap: 1.5rem; min-width: 0; }
+.contact-info p { color: var(--muted); }
+.contact-list { display: grid; gap: .75rem; }
+.contact-list div { display: grid; gap: .1rem; }
+.contact-list small { font-family: var(--font-mono); font-size: .72rem; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }
+.contact-list strong { font-weight: 500; word-break: break-word; }
+form { background: var(--surface); border: 1px solid var(--line); border-radius: 20px; padding: clamp(1.25rem, 4vw, 2rem); display: grid; gap: 1.1rem; min-width: 0; }
+.row { display: grid; grid-template-columns: 1fr 1fr; gap: 1.1rem; }
+.field { display: grid; gap: .4rem; min-width: 0; }
+label { font-weight: 500; font-size: .95rem; }
+input, select, textarea {
+  font: inherit; font-size: 1rem; color: var(--ink); background: var(--bg);
+  border: 1.5px solid var(--line); border-radius: 10px; padding: .85rem .9rem; width: 100%;
+}
+input:focus, select:focus, textarea:focus { outline: none; border-color: var(--accent); }
+textarea { min-height: 130px; resize: vertical; }
+.form-status { font-weight: 500; padding: .9rem 1rem; border-radius: 10px; background: var(--bg); }
+.form-status.ok { color: var(--track); }
+.form-status.err { color: var(--accent); }
+.fineprint { font-size: .85rem; color: var(--muted); }
+@media (max-width: 860px) { .contact-grid { grid-template-columns: 1fr; } }
+@media (max-width: 560px) { .row { grid-template-columns: 1fr; } }
+
+/* ---------- Pied de page + bouton devis mobile ---------- */
+.footer { border-top: 1px solid var(--line); padding-block: 2.5rem calc(2.5rem + 70px); color: var(--muted); font-size: .92rem; }
+.footer .wrap { display: flex; flex-wrap: wrap; gap: 1rem; justify-content: space-between; align-items: center; }
+.footer nav { display: flex; gap: 1.25rem; flex-wrap: wrap; }
+.footer a { text-decoration: none; }
+.sticky-quote { display: none; }
+@media (max-width: 860px) {
+  .sticky-quote {
+    display: flex; position: fixed; z-index: 40;
+    left: max(16px, env(safe-area-inset-left, 0px)); right: max(16px, env(safe-area-inset-right, 0px));
+    bottom: calc(14px + env(safe-area-inset-bottom, 0px));
+    box-shadow: 0 12px 30px -10px rgba(232,54,109,.6);
+    transition: transform .25s ease, opacity .25s ease;
+  }
+  .sticky-quote.hide { transform: translateY(150%); opacity: 0; pointer-events: none; }
+}
+@media (min-width: 861px) { .footer { padding-block: 2.5rem; } }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+  html { scroll-behavior: auto; }
+}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="wrap">
+    <a class="logo" href="#accueil" aria-label="Shortcut Studio, retour à l'accueil">
+      <span class="logo-mark" aria-hidden="true"></span>Shortcut Studio
+    </a>
+    <button class="burger" id="burger" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="nav">
+      <span></span><span></span><span></span>
+    </button>
+    <nav class="nav" id="nav">
+      <a href="#services">Services</a>
+      <a href="#methode">Méthode</a>
+      <a href="#demos">Démos</a>
+      <a href="#tarifs">Tarifs</a>
+      <a href="#contact">Contact</a>
+      <a class="btn btn-primary" href="#contact" data-quote>Demander un devis</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <!-- ========== ACCUEIL ========== -->
+  <section class="hero" id="accueil">
+    <div class="wrap">
+      <div class="hero-grid">
+        <div class="hero-copy">
+          <span class="eyebrow">Clipping vidéo pour créateurs</span>
+          <h1>Une vidéo longue.<br><em>Dix clips</em> qui tournent.</h1>
+          <p class="hero-lead">J'extrais les meilleurs moments de vos podcasts, lives et vidéos YouTube, puis je les monte en clips verticaux sous-titrés, prêts à publier.</p>
+          <div class="hero-ctas">
+            <a class="btn btn-primary" href="#contact" data-quote>Demander un devis gratuit</a>
+            <a class="btn btn-ghost" href="#demos">Voir les démos</a>
+          </div>
+          <div class="platforms" aria-label="Plateformes">
+            <span>TikTok</span><span>Instagram Reels</span><span>YouTube Shorts</span>
+          </div>
+        </div>
+
+        <div class="edit-desk" aria-hidden="true">
+          <div class="desk-top"><span>podcast_ep42.mp4 · 16:9</span><span>1920×1080</span></div>
+          <div class="source">
+            <span class="rec">REC</span>
+            <svg class="mic" viewBox="0 0 100 140" fill="none">
+              <circle cx="50" cy="40" r="26" fill="#4A5170"/>
+              <rect x="20" y="70" width="60" height="70" rx="22" fill="#3A4060"/>
+              <rect x="66" y="52" width="10" height="38" rx="5" fill="#8A93B8"/>
+              <circle cx="71" cy="48" r="9" fill="#9AA3C8"/>
+            </svg>
+            <span class="dur">01:12:48</span>
+          </div>
+          <div class="timeline">
+            <div class="wave" id="wave"></div>
+            <div class="cut" style="left:12%;width:9%"><b>A</b></div>
+            <div class="cut" style="left:44%;width:7%"><b>B</b></div>
+            <div class="cut" style="left:76%;width:10%"><b>C</b></div>
+            <div class="playhead"></div>
+          </div>
+          <div class="clips">
+            <div class="clip"><span class="tag">TikTok</span><span class="caption">Le conseil qui a <mark>tout changé</mark></span><span class="meta">A · 00:08:41 · 38 s</span></div>
+            <div class="clip"><span class="tag">Reels</span><span class="caption">J'ai failli <mark>tout arrêter</mark></span><span class="meta">B · 00:31:07 · 27 s</span></div>
+            <div class="clip"><span class="tag">Shorts</span><span class="caption">3 erreurs à <mark>éviter</mark></span><span class="meta">C · 00:55:19 · 45 s</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="proof">
+        <div><strong>48–72 h</strong><span>délai de livraison</span></div>
+        <div><strong>9:16</strong><span>format vertical natif</span></div>
+        <div><strong>100 %</strong><span>clips sous-titrés</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== SERVICES ========== -->
+  <section class="section" id="services">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">Services</span>
+        <h2>Tout ce qu'il faut pour publier, sans y passer vos soirées.</h2>
+        <p>Vous enregistrez. Je m'occupe du découpage, du montage et des sous-titres.</p>
+      </div>
+      <div class="audience">
+        <span>🎙️ Podcasteurs</span><span>🎥 Créateurs YouTube</span><span>💼 Entrepreneurs & coachs</span><span>📡 Streamers</span>
+      </div>
+      <div class="services">
+        <article class="service">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M20 4 8.1 15.9M14.5 14.5 20 20M8.1 8.1 12 12"/></svg>
+          <h3>Sélection des moments forts</h3>
+          <p>J'écoute votre vidéo en entier et je repère les passages qui accrochent : une punchline, une histoire, un conseil clair.</p>
+        </article>
+        <article class="service">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/></svg>
+          <h3>Recadrage vertical 9:16</h3>
+          <p>Le cadre suit la personne qui parle. Format natif pour TikTok, Reels et Shorts, sans bandes noires.</p>
+        </article>
+        <article class="service">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M7 15h4M13 15h4M7 11h10"/></svg>
+          <h3>Sous-titres dynamiques</h3>
+          <p>Sous-titres animés mot par mot, mots-clés colorés et emojis. 85 % des vidéos sont regardées sans le son.</p>
+        </article>
+        <article class="service">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+          <h3>Accroche des 3 premières secondes</h3>
+          <p>Titre à l'écran, coupe des silences et rythme serré pour que le public ne fasse pas défiler.</p>
+        </article>
+        <article class="service">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+          <h3>Musique, zooms et effets</h3>
+          <p>Musique libre de droits, zooms sur les moments clés, B-roll et effets sonores, adaptés à votre style.</p>
+        </article>
+        <article class="service">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+          <h3>Livraison prête à publier</h3>
+          <p>Fichiers MP4 en 1080×1920, avec une proposition de titre et de description pour chaque clip.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== MÉTHODE ========== -->
+  <section class="section band" id="methode">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">Comment je travaille</span>
+        <h2>De votre lien à vos clips en 4 étapes.</h2>
+        <p>Un processus simple, sans logiciel à installer de votre côté.</p>
+      </div>
+      <ol class="steps">
+        <li class="step">
+          <h3>Vous envoyez votre vidéo</h3>
+          <p>Un lien YouTube, Google Drive ou WeTransfer suffit. Dites-moi votre public et le ton souhaité.</p>
+          <span class="time">Jour 0</span>
+        </li>
+        <li class="step">
+          <h3>Je repère les meilleurs moments</h3>
+          <p>Je visionne tout et je sélectionne les passages qui ont le plus de potentiel viral.</p>
+          <span class="time">Jour 1</span>
+        </li>
+        <li class="step">
+          <h3>Montage des clips</h3>
+          <p>Recadrage vertical, sous-titres, accroche, musique et rythme. Chaque clip dure de 15 à 60 secondes.</p>
+          <span class="time">Jour 1–2</span>
+        </li>
+        <li class="step">
+          <h3>Livraison et retouches</h3>
+          <p>Vous recevez vos clips par lien de téléchargement. Une série de retouches est incluse.</p>
+          <span class="time">Jour 2–3</span>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ========== DÉMOS ========== -->
+  <section class="section" id="demos">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">Démonstrations</span>
+        <h2>Quelques clips réalisés.</h2>
+        <p>Touchez une vignette pour lancer la vidéo.</p>
+      </div>
+      <!-- Pour ajouter une vraie vidéo : mettez l'identifiant YouTube Shorts dans data-youtube="..."
+           Exemple : pour https://youtube.com/shorts/abc123XYZ  ->  data-youtube="abc123XYZ" -->
+      <div class="demos">
+        <article class="demo">
+          <button class="demo-frame" data-youtube="" aria-label="Lire la démo : podcast business">
+            <span class="poster"><span class="tag">Podcast</span><span class="play"></span><span class="caption">Mon premier client m'a <mark>tout appris</mark></span></span>
+          </button>
+          <h3>Podcast business</h3>
+          <span class="info">Épisode 1 h 20 → 12 clips</span>
+        </article>
+        <article class="demo">
+          <button class="demo-frame" data-youtube="" aria-label="Lire la démo : coach sportif">
+            <span class="poster"><span class="tag">Coaching</span><span class="play"></span><span class="caption">Arrête de faire <mark>ces abdos</mark></span></span>
+          </button>
+          <h3>Coach sportif</h3>
+          <span class="info">Live 45 min → 8 clips</span>
+        </article>
+        <article class="demo">
+          <button class="demo-frame" data-youtube="" aria-label="Lire la démo : interview entrepreneur">
+            <span class="poster"><span class="tag">Interview</span><span class="play"></span><span class="caption">J'ai levé 1 M€ <mark>sans réseau</mark></span></span>
+          </button>
+          <h3>Interview entrepreneur</h3>
+          <span class="info">Vidéo 58 min → 10 clips</span>
+        </article>
+        <article class="demo">
+          <button class="demo-frame" data-youtube="" aria-label="Lire la démo : stream gaming">
+            <span class="poster"><span class="tag">Stream</span><span class="play"></span><span class="caption">Le clutch <mark>le plus fou</mark> du live</span></span>
+          </button>
+          <h3>Stream gaming</h3>
+          <span class="info">Live 3 h → 15 clips</span>
+        </article>
+      </div>
+      <p class="demo-note" id="demo-note" hidden>Cette démo arrive bientôt. En attendant, demandez un clip test gratuit.</p>
+    </div>
+  </section>
+
+  <!-- ========== TARIFS ========== -->
+  <section class="section" id="tarifs">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">Tarifs</span>
+        <h2>Des prix clairs, sans engagement.</h2>
+        <p>Paiement à la commande. Sous-titres, recadrage et une série de retouches toujours inclus.</p>
+      </div>
+      <div class="pricing">
+        <article class="plan">
+          <span class="name">Découverte</span>
+          <div class="price"><strong>49 €</strong><span>/ vidéo</span></div>
+          <span class="per-clip">≈ 16 € le clip</span>
+          <ul>
+            <li>3 clips de 15 à 60 s</li>
+            <li>Sous-titres dynamiques</li>
+            <li>Recadrage 9:16</li>
+            <li>Livraison en 72 h</li>
+          </ul>
+          <a class="btn btn-ghost" href="#contact" data-quote data-pack="Découverte">Choisir Découverte</a>
+        </article>
+        <article class="plan featured">
+          <span class="badge">Le plus choisi</span>
+          <span class="name">Créateur</span>
+          <div class="price"><strong>129 €</strong><span>/ vidéo</span></div>
+          <span class="per-clip">≈ 13 € le clip</span>
+          <ul>
+            <li>10 clips de 15 à 60 s</li>
+            <li>Sous-titres + emojis + zooms</li>
+            <li>Accroche titre à l'écran</li>
+            <li>Titres et descriptions fournis</li>
+            <li>Livraison en 48 h</li>
+          </ul>
+          <a class="btn btn-primary" href="#contact" data-quote data-pack="Créateur">Choisir Créateur</a>
+        </article>
+        <article class="plan">
+          <span class="name">Abonnement Pro</span>
+          <div class="price"><strong>399 €</strong><span>/ mois</span></div>
+          <span class="per-clip">≈ 10 € le clip</span>
+          <ul>
+            <li>40 clips par mois</li>
+            <li>Tout le pack Créateur</li>
+            <li>Musique et B-roll</li>
+            <li>Livraison prioritaire en 24–48 h</li>
+            <li>Résiliable à tout moment</li>
+          </ul>
+          <a class="btn btn-ghost" href="#contact" data-quote data-pack="Abonnement Pro">Choisir Pro</a>
+        </article>
+      </div>
+      <div class="offer">
+        <p>Premier contact ? Je monte <strong>1 clip test gratuit</strong> à partir de votre vidéo.</p>
+        <a class="btn btn-primary" href="#contact" data-quote data-pack="Clip test gratuit">Recevoir mon clip test</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== FAQ ========== -->
+  <section class="section" id="faq" style="padding-top:0">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">Questions fréquentes</span>
+        <h2>Avant de commander.</h2>
+      </div>
+      <div class="faq">
+        <details><summary>Quelle durée de vidéo puis-je envoyer ?</summary><p>De 10 minutes à 3 heures. Pour un live plus long, demandez un devis.</p></details>
+        <details><summary>Est-ce que je garde les droits sur mes clips ?</summary><p>Oui. Les clips vous appartiennent à 100 %. Vous pouvez les publier où vous voulez, y compris en publicité.</p></details>
+        <details><summary>Et si un clip ne me plaît pas ?</summary><p>Une série de retouches est incluse dans chaque pack. Dites-moi ce que vous voulez changer et je corrige.</p></details>
+        <details><summary>Comment se passe le paiement ?</summary><p>Après validation du devis, par virement ou PayPal. L'abonnement Pro est payé chaque mois et se résilie à tout moment.</p></details>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== CONTACT ========== -->
+  <section class="section band" id="contact">
+    <div class="wrap">
+      <div class="contact-grid">
+        <div class="contact-info">
+          <div class="section-head" style="margin-bottom:0">
+            <span class="eyebrow">Contact & devis</span>
+            <h2>Parlons de votre prochaine vidéo.</h2>
+            <p>Remplissez le formulaire. Je vous réponds sous 24 h avec un devis gratuit.</p>
+          </div>
+          <div class="contact-list">
+            <div><small>E-mail</small><strong id="contact-email">contact@exemple.com</strong></div>
+            <div><small>Instagram</small><strong>@shortcut.studio</strong></div>
+            <div><small>Réponse</small><strong>Sous 24 h, 7 j/7</strong></div>
+          </div>
+        </div>
+
+        <form id="quote-form" novalidate>
+          <div class="row">
+            <div class="field"><label for="f-name">Nom</label><input id="f-name" name="nom" autocomplete="name" required placeholder="Votre nom"></div>
+            <div class="field"><label for="f-email">E-mail</label><input id="f-email" name="email" type="email" autocomplete="email" required placeholder="vous@exemple.com"></div>
+          </div>
+          <div class="row">
+            <div class="field">
+              <label for="f-profile">Vous êtes</label>
+              <select id="f-profile" name="profil">
+                <option>Podcasteur</option><option>Créateur de contenu</option><option>Entrepreneur / coach</option><option>Streamer</option><option>Autre</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="f-pack">Pack souhaité</label>
+              <select id="f-pack" name="pack">
+                <option>Je ne sais pas encore</option><option>Clip test gratuit</option><option>Découverte</option><option>Créateur</option><option>Abonnement Pro</option>
+              </select>
+            </div>
+          </div>
+          <div class="field"><label for="f-link">Lien de votre vidéo (facultatif)</label><input id="f-link" name="lien_video" type="url" inputmode="url" placeholder="https://youtube.com/..."></div>
+          <div class="field"><label for="f-msg">Votre projet</label><textarea id="f-msg" name="message" required placeholder="Durée de la vidéo, nombre de clips, style souhaité…"></textarea></div>
+          <button class="btn btn-primary" type="submit" id="f-submit">Envoyer ma demande de devis</button>
+          <p class="form-status" id="form-status" role="status" hidden></p>
+          <p class="fineprint">Vos informations servent uniquement à répondre à votre demande.</p>
+        </form>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="wrap">
+    <span>© <span id="year">2026</span> Shortcut Studio · Clipping vidéo</span>
+    <nav><a href="#services">Services</a><a href="#tarifs">Tarifs</a><a href="#contact">Contact</a></nav>
+  </div>
+</footer>
+
+<a class="btn btn-primary sticky-quote" id="sticky-quote" href="#contact" data-quote>Demander un devis gratuit</a>
+
+<script>
+/* =========================================================
+   RÉGLAGE À FAIRE : mettez ici l'adresse e-mail où vous voulez
+   recevoir les demandes de devis (service gratuit FormSubmit).
+   ========================================================= */
+var EMAIL_RECEPTION = "VOTRE-EMAIL@exemple.com";
+
+(function () {
+  // Année du pied de page
+  document.getElementById("year").textContent = new Date().getFullYear();
+
+  // Menu mobile
+  var burger = document.getElementById("burger");
+  var nav = document.getElementById("nav");
+  function setMenu(open) {
+    nav.classList.toggle("open", open);
+    burger.setAttribute("aria-expanded", open ? "true" : "false");
+    burger.setAttribute("aria-label", open ? "Fermer le menu" : "Ouvrir le menu");
+  }
+  burger.addEventListener("click", function () { setMenu(!nav.classList.contains("open")); });
+  nav.querySelectorAll("a").forEach(function (a) { a.addEventListener("click", function () { setMenu(false); }); });
+
+  // Forme d'onde décorative
+  var wave = document.getElementById("wave");
+  for (var i = 0; i < 90; i++) {
+    var bar = document.createElement("i");
+    var h = 18 + Math.abs(Math.sin(i * 0.45) * 55) + Math.abs(Math.sin(i * 1.7)) * 25;
+    bar.style.height = Math.min(h, 100) + "%";
+    wave.appendChild(bar);
+  }
+
+  // Boutons "devis" : présélectionne le pack choisi
+  var packSelect = document.getElementById("f-pack");
+  document.querySelectorAll("[data-quote]").forEach(function (el) {
+    el.addEventListener("click", function () {
+      var pack = el.getAttribute("data-pack");
+      if (pack) packSelect.value = pack;
+      setTimeout(function () { document.getElementById("f-name").focus({ preventScroll: true }); }, 500);
+    });
+  });
+
+  // Bouton devis flottant : caché quand le formulaire est visible
+  var sticky = document.getElementById("sticky-quote");
+  var contact = document.getElementById("contact");
+  if ("IntersectionObserver" in window) {
+    new IntersectionObserver(function (entries) {
+      sticky.classList.toggle("hide", entries[0].isIntersecting);
+    }, { threshold: 0.1 }).observe(contact);
+  }
+
+  // Galerie : lance la vidéo YouTube si un identifiant est renseigné
+  var note = document.getElementById("demo-note");
+  document.querySelectorAll(".demo-frame").forEach(function (frame) {
+    frame.addEventListener("click", function () {
+      var id = (frame.getAttribute("data-youtube") || "").trim();
+      if (!id) { note.hidden = false; return; }
+      var iframe = document.createElement("iframe");
+      iframe.src = "https://www.youtube-nocookie.com/embed/" + encodeURIComponent(id) + "?autoplay=1&playsinline=1&rel=0";
+      iframe.allow = "autoplay; encrypted-media; picture-in-picture";
+      iframe.allowFullscreen = true;
+      iframe.title = frame.getAttribute("aria-label") || "Vidéo";
+      frame.innerHTML = "";
+      frame.appendChild(iframe);
+    });
+  });
+
+  // Formulaire de devis
+  var form = document.getElementById("quote-form");
+  var statusEl = document.getElementById("form-status");
+  var submitBtn = document.getElementById("f-submit");
+  function show(msg, ok) {
+    statusEl.textContent = msg;
+    statusEl.className = "form-status " + (ok ? "ok" : "err");
+    statusEl.hidden = false;
+  }
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+    var name = form.nom.value.trim(), email = form.email.value.trim(), msg = form.message.value.trim();
+    if (!name || !msg || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+      show("Indiquez votre nom, une adresse e-mail valide et quelques mots sur votre projet.", false);
+      return;
+    }
+    if (EMAIL_RECEPTION.indexOf("exemple.com") !== -1) {
+      show("Formulaire en mode démo : l'adresse de réception n'est pas encore configurée.", false);
+      return;
+    }
+    submitBtn.disabled = true;
+    submitBtn.textContent = "Envoi en cours…";
+    var data = Object.fromEntries(new FormData(form).entries());
+    data._subject = "Nouvelle demande de devis : " + name;
+    data._template = "table";
+    fetch("https://formsubmit.co/ajax/" + encodeURIComponent(EMAIL_RECEPTION), {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "Accept": "application/json" },
+      body: JSON.stringify(data)
+    }).then(function (r) { return r.json(); })
+      .then(function (res) {
+        if (res.success === "true" || res.success === true) {
+          form.reset();
+          show("Merci ! Votre demande est envoyée. Je vous réponds sous 24 h.", true);
+        } else { throw new Error(); }
+      })
+      .catch(function () {
+        show("L'envoi n'a pas fonctionné. Réessayez ou écrivez-moi directement à " + EMAIL_RECEPTION + ".", false);
+      })
+      .finally(function () {
+        submitBtn.disabled = false;
+        submitBtn.textContent = "Envoyer ma demande de devis";
+      });
+  });
+})();
+</script>
+</body>
+</html>
