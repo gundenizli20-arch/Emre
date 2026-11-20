@@ -170,6 +170,7 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .band .eyebrow, .band .step::before { color: var(--accent-strong); }
 .band .step .time { color: var(--accent-strong); }
 .band .btn-primary { background: var(--deep-fg); color: var(--deep); }
+.band form .btn-primary { background: var(--accent); color: var(--accent-ink); }
 .band .section-head p { color: color-mix(in srgb, var(--deep-fg) 70%, transparent); }
 .steps { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.25rem; counter-reset: step; position: relative; }
 .step { display: grid; gap: .75rem; align-content: start; padding-top: 1.5rem; border-top: 2px solid color-mix(in srgb, var(--deep-fg) 20%, transparent); position: relative; min-width: 0; }
@@ -711,9 +712,12 @@ var EMAIL_RECEPTION = "shortcutstudio.video@gmail.com";
         if (res.success === "true" || res.success === true) {
           form.reset();
           show("Merci ! Votre demande est envoyée. Je vous réponds sous 24 h.", true);
-        } else { throw new Error(); }
+        } else if (/activat/i.test(res.message || "")) {
+          show("Formulaire en cours d'activation : un e-mail de confirmation a été envoyé à " + EMAIL_RECEPTION + ". Cliquez sur « Activate Form », puis renvoyez votre demande.", false);
+        } else { throw new Error(res.message || ""); }
       })
-      .catch(function () {
+      .catch(function (err) {
+        if (err && err.message) console.warn("FormSubmit :", err.message);
         show("L'envoi n'a pas fonctionné. Réessayez ou écrivez-moi directement à " + EMAIL_RECEPTION + ".", false);
       })
       .finally(function () {
