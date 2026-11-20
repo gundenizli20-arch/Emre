@@ -14,7 +14,11 @@ def ts(t):
 def transcribe(video):
     from faster_whisper import WhisperModel
     model = WhisperModel("small", device="cpu", compute_type="int8")
-    segs, info = model.transcribe(video, language="fr", word_timestamps=True, vad_filter=True)
+    import numpy as np
+    raw = subprocess.run(["ffmpeg","-v","error","-i",video,"-map","0:a:0","-af","loudnorm=I=-16","-ac","1","-ar","16000","-f","s16le","-"],
+                         capture_output=True, check=True).stdout
+    audio = np.frombuffer(raw, np.int16).astype(np.float32) / 32768.0
+    segs, info = model.transcribe(audio, language="fr", word_timestamps=True, vad_filter=True)
     words, lines = [], []
     for s in segs:
         lines.append(f"[{ts(s.start)} - {ts(s.end)}] {s.text.strip()}")
@@ -70,13 +74,18 @@ def clip(video, start, end, out, hook=""):
     vf = ("scale=-2:1920,crop=1080:1920,setsar=1,"
           f"subtitles='{ass}'")
     # si la vidéo est trop étroite pour être recadrée en hauteur, on la met sur fond flou
-    probe = subprocess.run(["ffprobe","-v","error","-select_streams","v:0","-show_entries","stream=width,height","-of","csv=p=0",video],capture_output=True,text=True).stdout.strip().split(",")
+    probe = subprocess.run(["ffprobe","-v","error","-select_streams","v:0","-show_entries","stream=width,height,color_transfer","-of","csv=p=0",video],capture_output=True,text=True).stdout.strip().split(",")
     w, h = int(probe[0]), int(probe[1])
+    # vidéos HDR de l'iPhone (HLG / PQ) -> conversion SDR pour TikTok/Reels
+    hdr = len(probe) > 2 and probe[2] in ("arib-std-b67", "smpte2084")
+    tm = ("zscale=t=linear:npl=100,format=gbrpf32le,zscale=p=bt709,tonemap=hable:desat=0,"
+          "zscale=t=bt709:m=bt709:r=tv,format=yuv420p,") if hdr else ""
+    vf = tm + vf
     if w / h < 9 / 16:
-        vf = (f"split[a][b];[a]scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,boxblur=20[bg];"
+        vf = tm + (f"split[a][b];[a]scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,boxblur=20[bg];"
               f"[b]scale=1080:-2[fg];[bg][fg]overlay=(W-w)/2:(H-h)/2,setsar=1,subtitles='{ass}'")
     subprocess.run(["ffmpeg","-v","error","-y","-ss",str(start),"-to",str(end),"-i",video,
-                    "-vf",vf,"-c:v","libx264","-preset","medium","-crf","20","-c:a","aac","-b:a","160k",
+                    "-vf",vf,"-c:v","libx264","-preset","medium","-crf","20","-pix_fmt","yuv420p","-map","0:v:0","-map","0:a:0","-af","loudnorm=I=-14:TP=-1.5","-c:a","aac","-b:a","160k",
                     "-movflags","+faststart",out], check=True)
     print("OK", out)
 
