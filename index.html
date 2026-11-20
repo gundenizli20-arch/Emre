@@ -10,34 +10,24 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=DM+Sans:wght@400;500;700&family=JetBrains+Mono:wght@500&display=swap">
 <style>
-/* Mise en page : une "timeline de montage" — la vidéo longue (16:9) devient des clips verticaux (9:16). */
+/* Mise en page : une "timeline de montage" — la vidéo longue (16:9) devient des clips verticaux (9:16).
+   Identité : noir profond, blanc cassé, orange signal. Look unique (sombre) assumé. */
 :root {
-  --bg: #F2F3F7;          /* fond de page */
-  --surface: #FFFFFF;     /* cartes */
-  --ink: #12141C;         /* texte principal */
-  --muted: #5B6072;       /* texte secondaire */
-  --line: #DCDFE8;        /* bordures */
-  --accent: #E8366D;      /* marqueur de clip (rose) */
-  --accent-ink: #FFFFFF;
-  --track: #0F9C93;       /* piste audio (sarcelle) */
-  --deep: #12141C;        /* bandes sombres */
-  --deep-fg: #F2F3F7;
+  --bg: #0B0B0C;          /* fond noir */
+  --surface: #151517;     /* cartes */
+  --ink: #F5F5F2;         /* texte blanc */
+  --muted: #A3A3A0;       /* texte secondaire */
+  --line: #27272B;        /* bordures */
+  --accent: #FF6A13;      /* orange signal */
+  --accent-strong: #C94F08; /* orange lisible sur fond blanc */
+  --accent-ink: #0B0B0C;
+  --track: #FF9A5A;       /* orange clair (détails) */
+  --deep: #F5F5F2;        /* bandes blanches */
+  --deep-fg: #0B0B0C;
   --font-display: "Bricolage Grotesque", "Arial Black", system-ui, sans-serif;
   --font-body: "DM Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
   --radius: 14px;
-  color-scheme: light;
-}
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --bg: #0E1016; --surface: #171A23; --ink: #EEF0F6; --muted: #9AA0B4; --line: #2A2E3B;
-    --accent: #FF4F84; --accent-ink: #12141C; --track: #2CC3B8; --deep: #07080C; --deep-fg: #EEF0F6;
-    color-scheme: dark;
-  }
-}
-:root[data-theme="dark"] {
-  --bg: #0E1016; --surface: #171A23; --ink: #EEF0F6; --muted: #9AA0B4; --line: #2A2E3B;
-  --accent: #FF4F84; --accent-ink: #12141C; --track: #2CC3B8; --deep: #07080C; --deep-fg: #EEF0F6;
   color-scheme: dark;
 }
 
@@ -128,27 +118,27 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .platforms span { border: 1px solid var(--line); border-radius: 999px; padding: 0.35rem 0.75rem; }
 
 /* La table de montage */
-.edit-desk { background: var(--deep); color: var(--deep-fg); border-radius: 22px; padding: 1.25rem; display: grid; gap: 1.1rem; min-width: 0; box-shadow: 0 30px 60px -30px rgba(18,20,28,.55); }
+.edit-desk { background: var(--surface); color: var(--ink); border: 1px solid var(--line); border-radius: 22px; padding: 1.25rem; display: grid; gap: 1.1rem; min-width: 0; box-shadow: 0 40px 80px -40px rgba(255,106,19,.35); }
 .desk-top { display: flex; justify-content: space-between; font-family: var(--font-mono); font-size: 0.72rem; opacity: .7; gap: 1rem; }
 .source { aspect-ratio: 16 / 9; max-width: 100%; border-radius: 10px; position: relative; overflow: hidden;
-  background: linear-gradient(135deg, #2B3045 0%, #1C2030 100%); }
+  background: linear-gradient(135deg, #2A2A2D 0%, #161618 100%); }
 .source .mic { position: absolute; left: 50%; bottom: 0; transform: translateX(-50%); width: 36%; height: 72%; }
 .source .rec { position: absolute; top: 10px; left: 12px; font-family: var(--font-mono); font-size: 0.7rem; display: flex; gap: .4rem; align-items: center; color: #F2F3F7; }
-.source .rec::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: #FF4F84; animation: blink 1.4s infinite; }
+.source .rec::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: #FF6A13; animation: blink 1.4s infinite; }
 .source .dur { position: absolute; bottom: 10px; right: 12px; font-family: var(--font-mono); font-size: 0.7rem; background: rgba(0,0,0,.5); padding: 2px 6px; border-radius: 4px; color: #F2F3F7; }
-.timeline { position: relative; height: 56px; border-radius: 8px; background: #1A1D29; overflow: hidden; }
+.timeline { position: relative; height: 56px; border-radius: 8px; background: #0B0B0C; overflow: hidden; }
 .wave { position: absolute; inset: 8px 0; display: flex; align-items: center; gap: 2px; padding: 0 4px; }
-.wave i { flex: 1; background: #2CC3B8; opacity: .55; border-radius: 2px; min-width: 1px; }
-.cut { position: absolute; top: 0; bottom: 0; border: 2px solid #FF4F84; background: rgba(255,79,132,.18); border-radius: 6px; }
-.cut b { position: absolute; top: -1px; left: -1px; background: #FF4F84; color: #12141C; font: 500 0.6rem/1 var(--font-mono); padding: 3px 4px; border-radius: 4px 0 4px 0; }
-.playhead { position: absolute; top: 0; bottom: 0; width: 2px; background: #F2F3F7; left: 8%; animation: play 9s linear infinite; }
+.wave i { flex: 1; background: #F5F5F2; opacity: .28; border-radius: 2px; min-width: 1px; }
+.cut { position: absolute; top: 0; bottom: 0; border: 2px solid #FF6A13; background: rgba(255,106,19,.18); border-radius: 6px; }
+.cut b { position: absolute; top: -1px; left: -1px; background: #FF6A13; color: #0B0B0C; font: 500 0.6rem/1 var(--font-mono); padding: 3px 4px; border-radius: 4px 0 4px 0; }
+.playhead { position: absolute; top: 0; bottom: 0; width: 2px; background: #FFFFFF; left: 8%; animation: play 9s linear infinite; }
 .clips { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; }
 .clip { aspect-ratio: 9 / 16; max-width: 100%; border-radius: 12px; position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: flex-end; padding: 0.6rem; }
-.clip:nth-child(1) { background: linear-gradient(180deg, #3A2F52, #1C1A2A); }
-.clip:nth-child(2) { background: linear-gradient(180deg, #1F4A4A, #12222A); }
-.clip:nth-child(3) { background: linear-gradient(180deg, #5A2A3A, #221419); }
+.clip:nth-child(1) { background: linear-gradient(180deg, #3B2A1E, #111112); }
+.clip:nth-child(2) { background: linear-gradient(180deg, #2E2E33, #0E0E10); }
+.clip:nth-child(3) { background: linear-gradient(180deg, #4A2410, #140F0C); }
 .clip .caption { font-family: var(--font-display); font-weight: 800; font-size: clamp(0.7rem, 2.6vw, 0.95rem); line-height: 1.1; color: #fff; text-transform: uppercase; }
-.clip .caption mark { background: #FFD43B; color: #12141C; padding: 0 3px; border-radius: 3px; }
+.clip .caption mark { background: #FF6A13; color: #0B0B0C; padding: 0 3px; border-radius: 3px; }
 .clip .meta { font-family: var(--font-mono); font-size: 0.6rem; color: rgba(255,255,255,.75); margin-top: .4rem; }
 .clip .tag { position: absolute; top: 0.5rem; left: 0.5rem; font: 500 0.58rem/1 var(--font-mono); background: rgba(255,255,255,.14); color: #fff; padding: 4px 6px; border-radius: 999px; }
 @keyframes play { from { left: 2%; } to { left: 97%; } }
@@ -177,6 +167,9 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 
 /* ---------- Méthode ---------- */
 .band { background: var(--deep); color: var(--deep-fg); }
+.band .eyebrow, .band .step::before { color: var(--accent-strong); }
+.band .step .time { color: var(--accent-strong); }
+.band .btn-primary { background: var(--deep-fg); color: var(--deep); }
 .band .section-head p { color: color-mix(in srgb, var(--deep-fg) 70%, transparent); }
 .steps { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.25rem; counter-reset: step; position: relative; }
 .step { display: grid; gap: .75rem; align-content: start; padding-top: 1.5rem; border-top: 2px solid color-mix(in srgb, var(--deep-fg) 20%, transparent); position: relative; min-width: 0; }
@@ -194,19 +187,19 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 /* ---------- Démos ---------- */
 .demos { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; }
 .demo { display: grid; gap: .6rem; min-width: 0; }
-.demo-frame { aspect-ratio: 9 / 16; max-width: 100%; border-radius: 16px; overflow: hidden; position: relative; background: var(--deep); border: 0; padding: 0; cursor: pointer; width: 100%; color: #fff; text-align: left; }
+.demo-frame { aspect-ratio: 9 / 16; max-width: 100%; border-radius: 16px; overflow: hidden; position: relative; background: #0B0B0C; outline: 1px solid var(--line); border: 0; padding: 0; cursor: pointer; width: 100%; color: #fff; text-align: left; }
 .demo-frame iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
 .demo-frame .poster { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: space-between; padding: .8rem; }
-.demo:nth-child(4n+1) .poster { background: linear-gradient(170deg, #3A2F52, #12141C 80%); }
-.demo:nth-child(4n+2) .poster { background: linear-gradient(170deg, #1F4A4A, #12141C 80%); }
-.demo:nth-child(4n+3) .poster { background: linear-gradient(170deg, #5A2A3A, #12141C 80%); }
-.demo:nth-child(4n+4) .poster { background: linear-gradient(170deg, #4A3F1F, #12141C 80%); }
+.demo:nth-child(4n+1) .poster { background: linear-gradient(170deg, #3B2A1E, #0B0B0C 80%); }
+.demo:nth-child(4n+2) .poster { background: linear-gradient(170deg, #2E2E33, #0B0B0C 80%); }
+.demo:nth-child(4n+3) .poster { background: linear-gradient(170deg, #4A2410, #0B0B0C 80%); }
+.demo:nth-child(4n+4) .poster { background: linear-gradient(170deg, #26262A, #0B0B0C 80%); }
 .poster .tag { align-self: flex-start; font: 500 .65rem/1 var(--font-mono); background: rgba(255,255,255,.14); padding: 5px 8px; border-radius: 999px; }
 .poster .play { align-self: center; width: 58px; height: 58px; border-radius: 50%; background: rgba(255,255,255,.95); display: grid; place-items: center; transition: transform .2s; }
-.poster .play::after { content: ""; border: 10px solid transparent; border-left: 16px solid #12141C; margin-left: 8px; }
+.poster .play::after { content: ""; border: 10px solid transparent; border-left: 16px solid #0B0B0C; margin-left: 8px; }
 .demo-frame:hover .play { transform: scale(1.08); }
 .poster .caption { font-family: var(--font-display); font-weight: 800; text-transform: uppercase; font-size: 1rem; line-height: 1.15; }
-.poster .caption mark { background: #FFD43B; color: #12141C; padding: 0 4px; border-radius: 3px; }
+.poster .caption mark { background: #FF6A13; color: #0B0B0C; padding: 0 4px; border-radius: 3px; }
 .demo h3 { font-size: 1rem; }
 .demo .info { font-family: var(--font-mono); font-size: .75rem; color: var(--muted); }
 .demo-note { margin-top: 1.5rem; color: var(--muted); font-size: .95rem; }
@@ -215,7 +208,7 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 /* ---------- Tarifs ---------- */
 .pricing { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; align-items: stretch; }
 .plan { background: var(--surface); border: 1px solid var(--line); border-radius: 20px; padding: 2rem 1.6rem; display: flex; flex-direction: column; gap: 1.25rem; min-width: 0; position: relative; }
-.plan.featured { border: 2px solid var(--accent); }
+.plan.featured { border: 2px solid var(--accent); background: linear-gradient(180deg, rgba(255,106,19,.08), var(--surface) 40%); }
 .plan .badge { position: absolute; top: -13px; left: 1.6rem; background: var(--accent); color: var(--accent-ink); font: 700 .75rem/1 var(--font-body); padding: .45rem .75rem; border-radius: 999px; }
 .plan .name { font-family: var(--font-mono); font-size: .8rem; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }
 .price { display: flex; align-items: baseline; gap: .3rem; }
@@ -275,7 +268,7 @@ textarea { min-height: 130px; resize: vertical; }
     display: flex; position: fixed; z-index: 40;
     left: max(16px, env(safe-area-inset-left, 0px)); right: max(16px, env(safe-area-inset-right, 0px));
     bottom: calc(14px + env(safe-area-inset-bottom, 0px));
-    box-shadow: 0 12px 30px -10px rgba(232,54,109,.6);
+    box-shadow: 0 12px 30px -10px rgba(255,106,19,.55);
     transition: transform .25s ease, opacity .25s ease;
   }
   .sticky-quote.hide { transform: translateY(150%); opacity: 0; pointer-events: none; }
@@ -332,10 +325,10 @@ textarea { min-height: 130px; resize: vertical; }
           <div class="source">
             <span class="rec">REC</span>
             <svg class="mic" viewBox="0 0 100 140" fill="none">
-              <circle cx="50" cy="40" r="26" fill="#4A5170"/>
-              <rect x="20" y="70" width="60" height="70" rx="22" fill="#3A4060"/>
-              <rect x="66" y="52" width="10" height="38" rx="5" fill="#8A93B8"/>
-              <circle cx="71" cy="48" r="9" fill="#9AA3C8"/>
+              <circle cx="50" cy="40" r="26" fill="#4A4A4F"/>
+              <rect x="20" y="70" width="60" height="70" rx="22" fill="#36363A"/>
+              <rect x="66" y="52" width="10" height="38" rx="5" fill="#8E8E93"/>
+              <circle cx="71" cy="48" r="9" fill="#FF6A13"/>
             </svg>
             <span class="dur">01:12:48</span>
           </div>
@@ -371,7 +364,7 @@ textarea { min-height: 130px; resize: vertical; }
         <p>Vous enregistrez. Je m'occupe du découpage, du montage et des sous-titres.</p>
       </div>
       <div class="audience">
-        <span>🎙️ Podcasteurs</span><span>🎥 Créateurs YouTube</span><span>💼 Entrepreneurs & coachs</span><span>📡 Streamers</span>
+        <span>Podcasteurs</span><span>Créateurs YouTube</span><span>Entrepreneurs & coachs</span><span>Streamers</span>
       </div>
       <div class="services">
         <article class="service">
@@ -490,27 +483,28 @@ textarea { min-height: 130px; resize: vertical; }
     <div class="wrap">
       <div class="section-head">
         <span class="eyebrow">Tarifs</span>
-        <h2>Des prix clairs, sans engagement.</h2>
-        <p>Paiement à la commande. Sous-titres, recadrage et une série de retouches toujours inclus.</p>
+        <h2>Prix de lancement, sans engagement.</h2>
+        <p>Paiement à la commande. Sous-titres, recadrage vertical et une série de retouches toujours inclus.</p>
       </div>
       <div class="pricing">
         <article class="plan">
           <span class="name">Découverte</span>
-          <div class="price"><strong>49 €</strong><span>/ vidéo</span></div>
-          <span class="per-clip">≈ 16 € le clip</span>
+          <div class="price"><strong>29 €</strong><span>/ 3 clips</span></div>
+          <span class="per-clip">≈ 9,70 € le clip</span>
           <ul>
             <li>3 clips de 15 à 60 s</li>
             <li>Sous-titres dynamiques</li>
-            <li>Recadrage 9:16</li>
+            <li>Recadrage vertical 9:16</li>
+            <li>1 série de retouches</li>
             <li>Livraison en 72 h</li>
           </ul>
-          <a class="btn btn-ghost" href="#contact" data-quote data-pack="Découverte">Choisir Découverte</a>
+          <a class="btn btn-ghost" href="#contact" data-quote data-pack="Découverte (3 clips)">Choisir Découverte</a>
         </article>
         <article class="plan featured">
           <span class="badge">Le plus choisi</span>
           <span class="name">Créateur</span>
-          <div class="price"><strong>129 €</strong><span>/ vidéo</span></div>
-          <span class="per-clip">≈ 13 € le clip</span>
+          <div class="price"><strong>79 €</strong><span>/ 10 clips</span></div>
+          <span class="per-clip">≈ 7,90 € le clip</span>
           <ul>
             <li>10 clips de 15 à 60 s</li>
             <li>Sous-titres + emojis + zooms</li>
@@ -518,20 +512,20 @@ textarea { min-height: 130px; resize: vertical; }
             <li>Titres et descriptions fournis</li>
             <li>Livraison en 48 h</li>
           </ul>
-          <a class="btn btn-primary" href="#contact" data-quote data-pack="Créateur">Choisir Créateur</a>
+          <a class="btn btn-primary" href="#contact" data-quote data-pack="Créateur (10 clips)">Choisir Créateur</a>
         </article>
         <article class="plan">
-          <span class="name">Abonnement Pro</span>
-          <div class="price"><strong>399 €</strong><span>/ mois</span></div>
-          <span class="per-clip">≈ 10 € le clip</span>
+          <span class="name">Pro</span>
+          <div class="price"><strong>149 €</strong><span>/ 20 clips</span></div>
+          <span class="per-clip">≈ 7,45 € le clip</span>
           <ul>
-            <li>40 clips par mois</li>
+            <li>20 clips de 15 à 60 s</li>
             <li>Tout le pack Créateur</li>
             <li>Musique et B-roll</li>
-            <li>Livraison prioritaire en 24–48 h</li>
-            <li>Résiliable à tout moment</li>
+            <li>Plusieurs vidéos sources acceptées</li>
+            <li>Livraison prioritaire en 48 h</li>
           </ul>
-          <a class="btn btn-ghost" href="#contact" data-quote data-pack="Abonnement Pro">Choisir Pro</a>
+          <a class="btn btn-ghost" href="#contact" data-quote data-pack="Pro (20 clips)">Choisir Pro</a>
         </article>
       </div>
       <div class="offer">
@@ -552,7 +546,7 @@ textarea { min-height: 130px; resize: vertical; }
         <details><summary>Quelle durée de vidéo puis-je envoyer ?</summary><p>De 10 minutes à 3 heures. Pour un live plus long, demandez un devis.</p></details>
         <details><summary>Est-ce que je garde les droits sur mes clips ?</summary><p>Oui. Les clips vous appartiennent à 100 %. Vous pouvez les publier où vous voulez, y compris en publicité.</p></details>
         <details><summary>Et si un clip ne me plaît pas ?</summary><p>Une série de retouches est incluse dans chaque pack. Dites-moi ce que vous voulez changer et je corrige.</p></details>
-        <details><summary>Comment se passe le paiement ?</summary><p>Après validation du devis, par virement ou PayPal. L'abonnement Pro est payé chaque mois et se résilie à tout moment.</p></details>
+        <details><summary>Comment se passe le paiement ?</summary><p>Après validation du devis, par virement ou PayPal. Chaque pack est payé une seule fois, sans abonnement.</p></details>
       </div>
     </div>
   </section>
@@ -569,7 +563,11 @@ textarea { min-height: 130px; resize: vertical; }
           </div>
           <div class="contact-list">
             <div><small>E-mail</small><strong id="contact-email">contact@exemple.com</strong></div>
-            <div><small>Instagram</small><strong>@shortcut.studio</strong></div>
+            <!-- Réseaux sociaux : à ajouter quand les comptes seront prêts, par exemple :
+            <div><small>Instagram</small><strong><a href="https://instagram.com/VOTRE-COMPTE">@VOTRE-COMPTE</a></strong></div>
+            <div><small>TikTok</small><strong><a href="https://tiktok.com/@VOTRE-COMPTE">@VOTRE-COMPTE</a></strong></div>
+            <div><small>YouTube</small><strong><a href="https://youtube.com/@VOTRE-COMPTE">@VOTRE-COMPTE</a></strong></div>
+            -->
             <div><small>Réponse</small><strong>Sous 24 h, 7 j/7</strong></div>
           </div>
         </div>
@@ -589,7 +587,7 @@ textarea { min-height: 130px; resize: vertical; }
             <div class="field">
               <label for="f-pack">Pack souhaité</label>
               <select id="f-pack" name="pack">
-                <option>Je ne sais pas encore</option><option>Clip test gratuit</option><option>Découverte</option><option>Créateur</option><option>Abonnement Pro</option>
+                <option>Je ne sais pas encore</option><option>Clip test gratuit</option><option>Découverte (3 clips)</option><option>Créateur (10 clips)</option><option>Pro (20 clips)</option>
               </select>
             </div>
           </div>
