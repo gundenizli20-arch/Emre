@@ -186,7 +186,7 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 
 /* ---------- Démos ---------- */
 .demos { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; }
-.demo { display: grid; gap: .6rem; min-width: 0; }
+.demo { display: grid; gap: .6rem; min-width: 0; align-content: start; }
 .demo-frame { aspect-ratio: 9 / 16; max-width: 100%; border-radius: 16px; overflow: hidden; position: relative; background: #0B0B0C; outline: 1px solid var(--line); border: 0; padding: 0; cursor: pointer; width: 100%; color: #fff; text-align: left; }
 .demo-frame iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
 .demo-frame .poster { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: space-between; padding: .8rem; }
@@ -439,8 +439,8 @@ textarea { min-height: 130px; resize: vertical; }
     <div class="wrap">
       <div class="section-head">
         <span class="eyebrow">Démonstrations</span>
-        <h2>Quelques clips réalisés.</h2>
-        <p>Touchez une vignette pour lancer la vidéo.</p>
+        <h2>Exemples de clips.</h2>
+        <p>Le style de montage que je propose. Touchez une vignette pour lancer la vidéo.</p>
       </div>
       <!-- Pour ajouter une vraie vidéo : mettez l'identifiant YouTube Shorts dans data-youtube="..."
            Exemple : pour https://youtube.com/shorts/abc123XYZ  ->  data-youtube="abc123XYZ" -->
